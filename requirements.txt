@@ -1,0 +1,4 @@
+pandas
+spacy
+google-generativeai
+google-api-python-client
