@@ -6,7 +6,7 @@ An intelligent chatbot that searches a CSV and uses Gemini AI to answer question
 
 ### 1️⃣ Clone the repository:
 ```sh
-git clone https://github.com/Aneek1/ai-chatbot.git
+git clone https://github.com/Aneek1/ai-chatbot-softrobotics
 cd ai-chatbot
 ```
 
