@@ -1,6 +1,6 @@
 # AI Chatbot 🤖
 
-An intelligent chatbot that searches a CSV, Google, and Gemini AI to answer questions.
+An intelligent chatbot that searches a CSV,  Gemini AI to answer questions you may have about soft robotics
 
 ## 🚀 Installation
 
