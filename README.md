@@ -64,7 +64,7 @@ $Env:GOOGLE_API_KEY = "YOUR_API_KEY_HERE"
 ```bash
 python oop_gui_chatbot.py  # Created using OOP for faster response time
 ```
-### 6 Debugging
+### 6. Debugging
 
 ```bash
 pip install "module name"  # Please install the modules separately if you encounter any errors during installation.
