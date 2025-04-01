@@ -3,6 +3,7 @@
 An intelligent chatbot that searches a CSV and uses Gemini AI to answer questions you may have about soft robotics.
 
 ## 🚀 Installation
+## Please do install GIT and Conda before following the steps below.
 
 ### 1️⃣ Clone the repository:
 
@@ -62,3 +63,9 @@ $Env:GOOGLE_API_KEY = "YOUR_API_KEY_HERE"
 
 ```bash
 python oop_gui_chatbot.py  # Created using OOP for faster response time
+```
+### 6 Debugging
+
+```bash
+pip install "module name"  # Please install the modules separately if you encounter any errors during installation.
+```
