@@ -62,7 +62,7 @@ $Env:GOOGLE_API_KEY = "YOUR_API_KEY_HERE"
 ### 5️⃣ Run the Bot and Enjoy! 🎉
 
 ```bash
-python oop_gui_chatbot.py  # Created using OOP for faster response time
+python newcodev1.py  # Created using OOP for faster response time
 ```
 ### 6. Debugging
 
