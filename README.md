@@ -68,4 +68,6 @@ python newcodev1.py  # Created using OOP for faster response time
 
 ```bash
 pip install "module name"  # Please install the modules separately if you encounter any errors during installation.
+python -m spacy download en_core_web_sm  #installs the spacy NLP model 
+
 ```
