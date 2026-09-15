@@ -89,7 +89,8 @@ def test_empty_general_result_is_undetermined():
 
 
 def test_specialist_without_group_labels_keeps_the_general_result():
-    result = detector([("ind_Latn", 0.95)], specialist=FakeScorer([])).detect("Bagaimana cara membuat aktuator?")
+    general = [("ind_Latn", 0.95)]
+    result = detector(general, specialist=FakeScorer([])).detect("Bagaimana cara membuat aktuator?")
     assert result.chosen == "ind_Latn"
     assert result.stage == "general"
 
