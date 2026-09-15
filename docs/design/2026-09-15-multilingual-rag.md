@@ -97,7 +97,7 @@ scripts/compress_glotlid.py
 ### 4.2 API
 
 - `POST /api/chat` with `{chat_id?, message, language_override?}` returns a server-sent event stream. Events, in order:
-  - `language`: `{candidates: [{code, name, script, probability}], chosen, uncertain, stage}` (top 3 candidates; `stage` is `general` or `specialist`)
+  - `language`: `{candidates: [{code, name, script, probability}], chosen, uncertain, stage}` (top 3 candidates; `stage` is `general`, `specialist` or `rule`)
   - `sources`: `[{id, title, snippet, language, source, url, licence}]`
   - `token`: `{text}` (repeated)
   - `citations`: `{valid: [n...], removed: [n...]}`
@@ -112,11 +112,11 @@ scripts/compress_glotlid.py
 
 - **Normalization before detection:** Unicode NFKC, remove zero-width and other invisible characters, replace newlines with spaces (fastText rejects them), collapse whitespace. Script detection uses Unicode character properties, and the dominant script is recorded.
 - **Stage 1 (general):** compressed GlotLID returns the top 5 labels (ISO 639-3 plus script, e.g. `ind_Latn`, `hin_Latn`, `cmn_Hani`).
-- **Stage 2 (specialist):** if the stage-1 top label is in a confusion group, the specialist chooses within that group:
+- **Stage 2 (specialist):** if the stage-1 top label is in a confusion group, the specialist chooses within that group. Labels it returns from outside the group are ignored; if none remain, the result falls back as if there were no specialist:
   - Malay/Indonesian: `ind_Latn`, `zsm_Latn`
   - Han script: `cmn_Hani`, `yue_Hani`, `zho_Hans`, `zho_Hant`
   - Romanized Hindi: `hin_Latn`, `urd_Latn`, `eng_Latn`
-- **Until the trained specialist exists:** Han-script text goes through the OpenCC rule (text unchanged by Traditional-to-Simplified conversion but changed by Simplified-to-Traditional is Simplified, the reverse is Traditional, otherwise ambiguous); the other groups keep the stage-1 result.
+- **Until the trained specialist exists** (or when it has no answer inside the group): Han-script text goes through the OpenCC rule, reported as stage `rule`, (text unchanged by Traditional-to-Simplified conversion but changed by Simplified-to-Traditional is Simplified, the reverse is Traditional, otherwise ambiguous); the other groups keep the stage-1 result.
 - **Mapping:** a table converts labels to display names and flags the 8 supported languages.
 - **Uncertainty:** a result is `uncertain` if the top probability is below `LANGID_MIN_CONFIDENCE` (default 0.60), two different scripts each make up more than 30% of letters, or the Han rule is ambiguous. The default threshold is re-tuned from the evaluation's threshold sweep.
 - **Answer language:**
