@@ -88,6 +88,14 @@ def test_empty_general_result_is_undetermined():
     assert result.uncertain is True
 
 
+def test_specialist_answer_for_han_skips_the_rule():
+    specialist = FakeScorer([("zho_Hant", 0.9), ("zho_Hans", 0.1)])
+    result = detector([("cmn_Hani", 0.95)], specialist=specialist).detect("繁體中文文字")
+    assert result.chosen == "zho_Hant"
+    assert result.stage == "specialist"
+    assert [c.code for c in result.candidates] == ["zho_Hant", "zho_Hans"]
+
+
 def test_specialist_without_group_labels_keeps_the_general_result():
     general = [("ind_Latn", 0.95)]
     result = detector(general, specialist=FakeScorer([])).detect("Bagaimana cara membuat aktuator?")
