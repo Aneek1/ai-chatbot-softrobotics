@@ -40,6 +40,18 @@ def test_missing_field_names_the_line():
         load_documents([incomplete], index, count=len)
 
 
+def test_duplicate_id_names_the_line():
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    first = (
+        '{"id": "dup", "text": "hello world", "language": "eng_Latn", '
+        '"source": "s", "title": "t1", "url": "u", "licence": "test-only"}'
+    )
+    second = first.replace("hello", "goodbye").replace('"t1"', '"t2"')
+    with pytest.raises(ValueError, match="line 3: duplicate id 'dup'"):
+        load_documents([first, "", second], index, count=len)
+    assert index.count_by_language() == {}
+
+
 def test_blank_lines_are_skipped():
     index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
     assert load_documents(["", "   "], index, count=len) == 0

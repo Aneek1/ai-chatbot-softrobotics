@@ -23,6 +23,7 @@ def load_documents(
     overlap_tokens: int = 50,
 ) -> int:
     chunks: list[Chunk] = []
+    seen: set[str] = set()
     for line_number, line in enumerate(lines, start=1):
         if not line.strip():
             continue
@@ -30,6 +31,11 @@ def load_documents(
         for field in REQUIRED:
             if field not in doc:
                 raise ValueError(f"line {line_number}: missing '{field}'")
+        # Chunk ids derive from the document id, so a repeated id would
+        # silently overwrite the earlier document's chunks in the index.
+        if doc["id"] in seen:
+            raise ValueError(f"line {line_number}: duplicate id '{doc['id']}'")
+        seen.add(doc["id"])
         text = normalize(doc["text"])
         pieces = chunk_text(text, script_profile(text).dominant, count, max_tokens, overlap_tokens)
         chunks.extend(
