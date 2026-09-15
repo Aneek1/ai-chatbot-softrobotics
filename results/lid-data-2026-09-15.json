@@ -1,0 +1,745 @@
+{
+  "built_at": "2026-09-15T10:11:33+00:00",
+  "sources": {
+    "openlid": {
+      "name": "OpenLID",
+      "url": "https://huggingface.co/datasets/laurievb/open-lid-dataset",
+      "revision": "67b9a87a9f52285a666aea50a0e118b8db8f6daa",
+      "licence": "other: varies by source dataset (see the dataset card); the data is not redistributed",
+      "shards_used": [
+        "data/train-00012-of-00044-52965f2dfe70dd00.parquet",
+        "data/train-00024-of-00044-76821c02403d3e1d.parquet",
+        "data/train-00011-of-00044-a38f0fb72d09d387.parquet",
+        "data/train-00007-of-00044-92cc689bc122d4f4.parquet",
+        "data/train-00038-of-00044-9eac220475e8f19c.parquet",
+        "data/train-00035-of-00044-0806ad9392ba5af4.parquet",
+        "data/train-00027-of-00044-d043f7f10e3ad418.parquet"
+      ],
+      "shards_available": 44
+    },
+    "dakshina": {
+      "name": "Dakshina v1.0",
+      "url": "https://storage.googleapis.com/gresearch/dakshina/dakshina_dataset_v1.0.tar",
+      "bytes": 2008340480,
+      "licence": "CC-BY-SA-4.0",
+      "citation": "Roark et al., Processing South Asian Languages Written in the Latin Script: the Dakshina Dataset, LREC 2020",
+      "archive_sha256": "83530bec211893d9df429298f42e63c350c25ad56f9f5172f85edb0575ee5b03",
+      "files": {
+        "hi.romanized.rejoined.dev.roman.txt": {
+          "bytes": 524623,
+          "sha256": "106fbc342d19587a9a7a7687e6bd8a0312669c238511618148c01b49f1c6f881"
+        },
+        "hi.romanized.rejoined.test.roman.txt": {
+          "bytes": 516012,
+          "sha256": "c49ebf67a0f7fdcc69f7f421dd21f6b48491b8db5fe3ef641078d660ce6bf1e7"
+        },
+        "hi.translit.sampled.dev.tsv": {
+          "bytes": 125512,
+          "sha256": "62019ba0e046ceffd7211a2797daf2d2970da77586ee056dcecaa34c38392bce"
+        },
+        "hi.translit.sampled.test.tsv": {
+          "bytes": 128062,
+          "sha256": "37dccdd2ca18a520267588b472f293ce805a1444a5ca2a99169417da17d9bafd"
+        },
+        "hi.translit.sampled.train.tsv": {
+          "bytes": 1326377,
+          "sha256": "4b3f872d3363a91f949dfb640acab6a968ed7d2d65829a22af662c3e99ef7803"
+        },
+        "ur.romanized.rejoined.dev.roman.txt": {
+          "bytes": 467130,
+          "sha256": "fb388346c18082b8e12c342d4eec7e4ae0d9eb2af174632bcda23a2e71f17178"
+        },
+        "ur.romanized.rejoined.test.roman.txt": {
+          "bytes": 487641,
+          "sha256": "ec3bc5ad395ad2ae2048b60825557af20d4a8fa8406de34d0f1863ff3b723360"
+        },
+        "ur.translit.sampled.dev.tsv": {
+          "bytes": 213745,
+          "sha256": "5ad67a8f4a2bdecd69c50cdd522880c6b4f5da2e35f5f29930b699bae7eb1f71"
+        },
+        "ur.translit.sampled.test.tsv": {
+          "bytes": 216098,
+          "sha256": "c57a804a5f7bf0e51486c0a8258ec41ed62ebc4612aed741e0f3bff47d703fd8"
+        },
+        "ur.translit.sampled.train.tsv": {
+          "bytes": 2185405,
+          "sha256": "41f4f4109e60813f578a70a75b19189acb907e800a862401b7205f6f4a51e7f2"
+        }
+      }
+    },
+    "flores": {
+      "name": "FLORES-200",
+      "url": "https://dl.fbaipublicfiles.com/nllb/flores200_dataset.tar.gz",
+      "sha256": "b8b0b76783024b85797e5cc75064eb83fc5288b41e9654dabc7be6ae944011f6",
+      "bytes": 25585843,
+      "last_modified": "2022-07-14",
+      "licence": "CC-BY-SA-4.0",
+      "licence_source": "https://github.com/facebookresearch/flores/blob/main/flores200/README.md"
+    }
+  },
+  "openlid_rows_per_language": {
+    "ace_Arab": 1000,
+    "ace_Latn": 1000,
+    "acm_Arab": 1000,
+    "acq_Arab": 1000,
+    "aeb_Arab": 1000,
+    "afr_Latn": 1000,
+    "ajp_Arab": 1000,
+    "als_Latn": 1000,
+    "amh_Ethi": 1000,
+    "apc_Arab": 1000,
+    "arb_Arab": 1000,
+    "ars_Arab": 1000,
+    "ary_Arab": 1000,
+    "arz_Arab": 1000,
+    "asm_Beng": 1000,
+    "ast_Latn": 1000,
+    "awa_Deva": 1000,
+    "ayr_Latn": 1000,
+    "azb_Arab": 549,
+    "azj_Latn": 1000,
+    "bak_Cyrl": 1000,
+    "bam_Latn": 1000,
+    "ban_Latn": 1000,
+    "bel_Cyrl": 1000,
+    "bem_Latn": 1000,
+    "ben_Beng": 1000,
+    "bho_Deva": 1000,
+    "bjn_Arab": 1000,
+    "bjn_Latn": 1000,
+    "bod_Tibt": 1000,
+    "bos_Latn": 1000,
+    "bug_Latn": 1000,
+    "bul_Cyrl": 1000,
+    "cat_Latn": 1000,
+    "ceb_Latn": 1000,
+    "ces_Latn": 1000,
+    "cjk_Latn": 1000,
+    "ckb_Arab": 1000,
+    "crh_Latn": 1000,
+    "cym_Latn": 1000,
+    "dan_Latn": 1000,
+    "deu_Latn": 1000,
+    "dik_Latn": 1000,
+    "dyu_Latn": 1000,
+    "dzo_Tibt": 1000,
+    "ell_Grek": 1000,
+    "eng_Latn": 100000,
+    "epo_Latn": 1000,
+    "est_Latn": 1000,
+    "eus_Latn": 1000,
+    "ewe_Latn": 1000,
+    "fao_Latn": 1000,
+    "fij_Latn": 1000,
+    "fin_Latn": 1000,
+    "fon_Latn": 1000,
+    "fra_Latn": 1000,
+    "fur_Latn": 1000,
+    "fuv_Latn": 1000,
+    "gaz_Latn": 1000,
+    "gla_Latn": 1000,
+    "gle_Latn": 1000,
+    "glg_Latn": 1000,
+    "grn_Latn": 1000,
+    "guj_Gujr": 1000,
+    "hat_Latn": 1000,
+    "hau_Latn": 1000,
+    "heb_Hebr": 1000,
+    "hin_Deva": 100000,
+    "hne_Deva": 1000,
+    "hrv_Latn": 1000,
+    "hun_Latn": 1000,
+    "hye_Armn": 1000,
+    "ibo_Latn": 1000,
+    "ilo_Latn": 1000,
+    "ind_Latn": 100000,
+    "isl_Latn": 1000,
+    "ita_Latn": 1000,
+    "jav_Latn": 1000,
+    "jpn_Jpan": 100000,
+    "kab_Latn": 1000,
+    "kac_Latn": 1000,
+    "kam_Latn": 1000,
+    "kan_Knda": 1000,
+    "kas_Arab": 1000,
+    "kas_Deva": 1000,
+    "kat_Geor": 1000,
+    "kaz_Cyrl": 1000,
+    "kbp_Latn": 1000,
+    "kea_Latn": 1000,
+    "khk_Cyrl": 1000,
+    "khm_Khmr": 1000,
+    "kik_Latn": 1000,
+    "kin_Latn": 1000,
+    "kir_Cyrl": 1000,
+    "kmb_Latn": 1000,
+    "kmr_Latn": 1000,
+    "knc_Arab": 1000,
+    "knc_Latn": 1000,
+    "kon_Latn": 1000,
+    "kor_Hang": 100000,
+    "lao_Laoo": 1000,
+    "lij_Latn": 1000,
+    "lim_Latn": 1000,
+    "lin_Latn": 1000,
+    "lit_Latn": 1000,
+    "lmo_Latn": 1000,
+    "ltg_Latn": 1000,
+    "ltz_Latn": 1000,
+    "lua_Latn": 1000,
+    "lug_Latn": 1000,
+    "luo_Latn": 1000,
+    "lus_Latn": 1000,
+    "lvs_Latn": 1000,
+    "mag_Deva": 1000,
+    "mai_Deva": 1000,
+    "mal_Mlym": 1000,
+    "mar_Deva": 1000,
+    "min_Latn": 1000,
+    "mkd_Cyrl": 1000,
+    "mlt_Latn": 1000,
+    "mni_Beng": 1000,
+    "mos_Latn": 1000,
+    "mri_Latn": 1000,
+    "mya_Mymr": 1000,
+    "nld_Latn": 1000,
+    "nno_Latn": 1000,
+    "nob_Latn": 1000,
+    "npi_Deva": 1000,
+    "nso_Latn": 1000,
+    "nus_Latn": 1000,
+    "nya_Latn": 1000,
+    "oci_Latn": 1000,
+    "ory_Orya": 1000,
+    "pag_Latn": 1000,
+    "pan_Guru": 1000,
+    "pap_Latn": 1000,
+    "pbt_Arab": 1000,
+    "pes_Arab": 1000,
+    "plt_Latn": 1000,
+    "pol_Latn": 1000,
+    "por_Latn": 1000,
+    "prs_Arab": 1000,
+    "quy_Latn": 1000,
+    "ron_Latn": 1000,
+    "run_Latn": 1000,
+    "rus_Cyrl": 1000,
+    "sag_Latn": 1000,
+    "san_Deva": 1000,
+    "sat_Olck": 1000,
+    "scn_Latn": 1000,
+    "shn_Mymr": 1000,
+    "sin_Sinh": 1000,
+    "slk_Latn": 1000,
+    "slv_Latn": 1000,
+    "smo_Latn": 1000,
+    "sna_Latn": 1000,
+    "snd_Arab": 1000,
+    "som_Latn": 1000,
+    "sot_Latn": 1000,
+    "spa_Latn": 1000,
+    "srd_Latn": 1000,
+    "srp_Cyrl": 1000,
+    "ssw_Latn": 1000,
+    "sun_Latn": 1000,
+    "swe_Latn": 1000,
+    "swh_Latn": 1000,
+    "szl_Latn": 1000,
+    "tam_Taml": 100000,
+    "taq_Latn": 1000,
+    "taq_Tfng": 1000,
+    "tat_Cyrl": 1000,
+    "tel_Telu": 1000,
+    "tgk_Cyrl": 1000,
+    "tgl_Latn": 1000,
+    "tha_Thai": 1000,
+    "tir_Ethi": 1000,
+    "tpi_Latn": 1000,
+    "tsn_Latn": 1000,
+    "tso_Latn": 1000,
+    "tuk_Latn": 1000,
+    "tum_Latn": 1000,
+    "tur_Latn": 1000,
+    "twi_Latn": 1000,
+    "tzm_Tfng": 1000,
+    "uig_Arab": 1000,
+    "ukr_Cyrl": 1000,
+    "umb_Latn": 1000,
+    "urd_Arab": 1000,
+    "uzn_Latn": 1000,
+    "vec_Latn": 1000,
+    "vie_Latn": 1000,
+    "war_Latn": 1000,
+    "wol_Latn": 1000,
+    "xho_Latn": 1000,
+    "ydd_Hebr": 914,
+    "yor_Latn": 1000,
+    "yue_Hant": 1000,
+    "zho_Hans": 100000,
+    "zho_Hant": 100000,
+    "zsm_Latn": 100000,
+    "zul_Latn": 1000
+  },
+  "openlid_below_cap": {},
+  "cleaning": {
+    "kept": {
+      "eng_Latn": 100000,
+      "hin_Deva": 100000,
+      "hin_Latn": 48178,
+      "ind_Latn": 100000,
+      "jpn_Jpan": 100000,
+      "kor_Hang": 100000,
+      "other": 191463,
+      "tam_Taml": 100000,
+      "urd_Latn": 93012,
+      "zho_Hans": 100000,
+      "zho_Hant": 100000,
+      "zsm_Latn": 100000
+    },
+    "too_short": {
+      "hin_Deva": 3,
+      "hin_Latn": 23,
+      "jpn_Jpan": 23,
+      "kor_Hang": 2,
+      "other": 4,
+      "tam_Taml": 2,
+      "urd_Latn": 16,
+      "zho_Hans": 1
+    },
+    "duplicates": {
+      "hin_Deva": 9,
+      "hin_Latn": 3003,
+      "ind_Latn": 8,
+      "jpn_Jpan": 111,
+      "other": 34641,
+      "tam_Taml": 3946,
+      "urd_Latn": 23352,
+      "zho_Hans": 67,
+      "zho_Hant": 40,
+      "zsm_Latn": 7093
+    },
+    "label_conflicts": {
+      "hin_Deva": 6,
+      "ind_Latn": 2,
+      "other": 5,
+      "urd_Latn": 15163,
+      "zho_Hans": 63,
+      "zho_Hant": 38
+    },
+    "contaminated": {
+      "eng_Latn": 1,
+      "hin_Latn": 2358,
+      "other": 1,
+      "urd_Latn": 5183
+    }
+  },
+  "held_out": {
+    "flores_sentences": 409836,
+    "dakshina_test_lines": 24899
+  },
+  "config": {
+    "seed": 20260915,
+    "target_cap": 100000,
+    "other_cap": 1000,
+    "max_shards": 16,
+    "split_target": 0.1,
+    "opencc_per_label": 20000,
+    "opencc_fraction": 0.2,
+    "crop_fraction": 0.1,
+    "code_mixed_fraction": 0.02,
+    "select_per_label": 2000
+  },
+  "split_plans": {
+    "eng_Latn": {
+      "sources": {
+        "lti": "test",
+        "setimes": "test",
+        "wili2018": "test",
+        "xlsum": "train"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "hin_Deva": {
+      "sources": {
+        "lti": "test",
+        "mt560": "train",
+        "wili2018": "test"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "hin_Latn": {
+      "sources": {
+        "hi.romanized.rejoined.dev.roman.txt": "train",
+        "hi.translit.sampled.dev.tsv": "train",
+        "hi.translit.sampled.train.tsv": "train"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": false
+    },
+    "ind_Latn": {
+      "sources": {
+        "lti": "test",
+        "mt560": "train",
+        "wili2018": "test",
+        "xlsum": "train"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "jpn_Jpan": {
+      "sources": {
+        "lti": "test",
+        "mt560": "train",
+        "wili2018": "test"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "kor_Hang": {
+      "sources": {
+        "lti": "test",
+        "mt560": "train",
+        "wili2018": "test"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "other": {
+      "sources": {
+        "arabDialects": "test",
+        "bhojpuri": "test",
+        "globalvoices": "test",
+        "guarani": "test",
+        "hkcancor": "test",
+        "iadd": "test",
+        "lti": "train",
+        "madar": "test",
+        "manipuri": "test",
+        "mizan": "test",
+        "mt560": "train",
+        "nllbSeed": "val",
+        "setimes": "test",
+        "tatoeba": "test",
+        "tep": "test",
+        "til": "test",
+        "wili2018": "test",
+        "xlsum": "test"
+      },
+      "val_source_disjoint": true,
+      "test_source_disjoint": true
+    },
+    "tam_Taml": {
+      "sources": {
+        "lti": "test",
+        "mt560": "train",
+        "wili2018": "test"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "urd_Latn": {
+      "sources": {
+        "ur.romanized.rejoined.dev.roman.txt": "train",
+        "ur.translit.sampled.dev.tsv": "train",
+        "ur.translit.sampled.train.tsv": "train"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": false
+    },
+    "zho_Hans": {
+      "sources": {
+        "xlsum": "train"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": false
+    },
+    "zho_Hant": {
+      "sources": {
+        "leipzig": "train",
+        "wili2018": "test",
+        "xlsum": "train"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    },
+    "zsm_Latn": {
+      "sources": {
+        "leipzig": "train",
+        "mt560": "test"
+      },
+      "val_source_disjoint": false,
+      "test_source_disjoint": true
+    }
+  },
+  "cross_split_duplicates_removed": {
+    "natural": {
+      "train": 0,
+      "val": 0,
+      "test": 0
+    },
+    "after_augmentation": {
+      "train": 20092,
+      "val": 2975,
+      "test": 1843
+    }
+  },
+  "synthetic_contaminated_removed": {
+    "train": 2134,
+    "val": 222,
+    "test": 184
+  },
+  "counts": {
+    "train": {
+      "eng_Latn": {
+        "code_mixed": 16184,
+        "crop": 6732,
+        "natural": 86157
+      },
+      "hin_Deva": {
+        "code_mixed": 569,
+        "crop": 6273,
+        "natural": 84184
+      },
+      "hin_Latn": {
+        "code_mixed": 43,
+        "crop": 1728,
+        "natural": 38627
+      },
+      "ind_Latn": {
+        "code_mixed": 1140,
+        "crop": 7271,
+        "natural": 89030
+      },
+      "jpn_Jpan": {
+        "code_mixed": 183,
+        "crop": 7262,
+        "natural": 86917
+      },
+      "kor_Hang": {
+        "code_mixed": 186,
+        "crop": 7187,
+        "natural": 88311
+      },
+      "other": {
+        "crop": 13307,
+        "natural": 149245
+      },
+      "tam_Taml": {
+        "code_mixed": 608,
+        "crop": 7030,
+        "natural": 79575
+      },
+      "urd_Latn": {
+        "code_mixed": 35,
+        "crop": 3083,
+        "natural": 74377
+      },
+      "zho_Hans": {
+        "code_mixed": 216,
+        "crop": 6854,
+        "natural": 80058,
+        "opencc": 16436
+      },
+      "zho_Hant": {
+        "code_mixed": 315,
+        "crop": 7887,
+        "natural": 89697,
+        "opencc": 16487
+      },
+      "zsm_Latn": {
+        "code_mixed": 1240,
+        "crop": 7454,
+        "natural": 89762
+      }
+    },
+    "val": {
+      "eng_Latn": {
+        "code_mixed": 1881,
+        "crop": 716,
+        "natural": 9570
+      },
+      "hin_Deva": {
+        "code_mixed": 67,
+        "crop": 673,
+        "natural": 9342
+      },
+      "hin_Latn": {
+        "code_mixed": 9,
+        "crop": 202,
+        "natural": 4687
+      },
+      "ind_Latn": {
+        "code_mixed": 117,
+        "crop": 799,
+        "natural": 9903
+      },
+      "jpn_Jpan": {
+        "code_mixed": 26,
+        "crop": 774,
+        "natural": 9639
+      },
+      "kor_Hang": {
+        "code_mixed": 20,
+        "crop": 751,
+        "natural": 9833
+      },
+      "other": {
+        "crop": 1791,
+        "natural": 18550
+      },
+      "tam_Taml": {
+        "code_mixed": 72,
+        "crop": 755,
+        "natural": 8879
+      },
+      "urd_Latn": {
+        "code_mixed": 3,
+        "crop": 367,
+        "natural": 9223
+      },
+      "zho_Hans": {
+        "code_mixed": 27,
+        "crop": 863,
+        "natural": 10025,
+        "opencc": 1968
+      },
+      "zho_Hant": {
+        "code_mixed": 38,
+        "crop": 837,
+        "natural": 10152,
+        "opencc": 1963
+      },
+      "zsm_Latn": {
+        "code_mixed": 143,
+        "crop": 757,
+        "natural": 9948
+      }
+    },
+    "test": {
+      "eng_Latn": {
+        "code_mixed": 1150,
+        "crop": 341,
+        "natural": 4273
+      },
+      "hin_Deva": {
+        "code_mixed": 77,
+        "crop": 515,
+        "natural": 6466
+      },
+      "hin_Latn": {
+        "code_mixed": 5,
+        "crop": 201,
+        "natural": 4589
+      },
+      "ind_Latn": {
+        "code_mixed": 13,
+        "crop": 74,
+        "natural": 1065
+      },
+      "jpn_Jpan": {
+        "code_mixed": 42,
+        "crop": 333,
+        "natural": 3443
+      },
+      "kor_Hang": {
+        "code_mixed": 29,
+        "crop": 148,
+        "natural": 1855
+      },
+      "other": {
+        "crop": 2171,
+        "natural": 23662
+      },
+      "tam_Taml": {
+        "code_mixed": 175,
+        "crop": 1002,
+        "natural": 11530
+      },
+      "urd_Latn": {
+        "code_mixed": 4,
+        "crop": 349,
+        "natural": 9157
+      },
+      "zho_Hans": {
+        "code_mixed": 37,
+        "crop": 808,
+        "natural": 9808,
+        "opencc": 57
+      },
+      "zho_Hant": {
+        "crop": 7,
+        "natural": 122,
+        "opencc": 968
+      },
+      "zsm_Latn": {
+        "crop": 16,
+        "natural": 290
+      }
+    },
+    "val_select": {
+      "eng_Latn": {
+        "code_mixed": 315,
+        "crop": 115,
+        "natural": 1570
+      },
+      "hin_Deva": {
+        "code_mixed": 14,
+        "crop": 139,
+        "natural": 1847
+      },
+      "hin_Latn": {
+        "code_mixed": 5,
+        "crop": 75,
+        "natural": 1920
+      },
+      "ind_Latn": {
+        "code_mixed": 17,
+        "crop": 157,
+        "natural": 1826
+      },
+      "jpn_Jpan": {
+        "code_mixed": 4,
+        "crop": 143,
+        "natural": 1853
+      },
+      "kor_Hang": {
+        "code_mixed": 2,
+        "crop": 138,
+        "natural": 1860
+      },
+      "other": {
+        "crop": 190,
+        "natural": 1810
+      },
+      "tam_Taml": {
+        "code_mixed": 16,
+        "crop": 145,
+        "natural": 1839
+      },
+      "urd_Latn": {
+        "crop": 86,
+        "natural": 1914
+      },
+      "zho_Hans": {
+        "code_mixed": 1,
+        "crop": 123,
+        "natural": 1579,
+        "opencc": 297
+      },
+      "zho_Hant": {
+        "code_mixed": 5,
+        "crop": 125,
+        "natural": 1562,
+        "opencc": 308
+      },
+      "zsm_Latn": {
+        "code_mixed": 23,
+        "crop": 128,
+        "natural": 1849
+      }
+    }
+  },
+  "wall_clock_seconds": 494.1
+}
