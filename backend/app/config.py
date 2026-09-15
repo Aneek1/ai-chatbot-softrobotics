@@ -19,6 +19,7 @@ class Settings(BaseSettings):
 
     google_api_key: SecretStr | None = None
     gemini_model: str | None = None
+    gemini_timeout: float = 120.0
 
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "qwen3:8b"

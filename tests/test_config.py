@@ -2,13 +2,14 @@ from backend.app.config import REPO_ROOT, Settings
 
 
 def test_defaults_point_inside_the_repo(monkeypatch):
-    for key in ("GOOGLE_API_KEY", "GEMINI_MODEL", "OLLAMA_URL", "OLLAMA_MODEL", "OLLAMA_TIMEOUT",
-                "LANGID_MIN_CONFIDENCE", "RETRIEVAL_TOP_K", "MODELS_DIR", "INDEX_DIR"):
+    for key in ("GOOGLE_API_KEY", "GEMINI_MODEL", "GEMINI_TIMEOUT", "OLLAMA_URL", "OLLAMA_MODEL",
+                "OLLAMA_TIMEOUT", "LANGID_MIN_CONFIDENCE", "RETRIEVAL_TOP_K", "MODELS_DIR", "INDEX_DIR"):
         monkeypatch.delenv(key, raising=False)
     settings = Settings(_env_file=None)
     assert settings.models_dir == REPO_ROOT / "models"
     assert settings.ollama_model == "qwen3:8b"
     assert settings.ollama_timeout == 120.0
+    assert settings.gemini_timeout == 120.0
     assert settings.langid_min_confidence == 0.60
 
 

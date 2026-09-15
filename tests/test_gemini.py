@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 
+import httpx
 import pytest
 
 from backend.providers.base import Message, ProviderError
@@ -47,3 +48,25 @@ def test_sdk_errors_become_provider_errors():
         list(gemini(models).stream([Message("user", "hi")]))
     assert error.value.code == "provider_error"
     assert "quota exceeded" in str(error.value)
+
+
+def test_timeout_is_provider_timeout():
+    models = FakeModels(error=httpx.ReadTimeout("timed out"))
+    with pytest.raises(ProviderError) as error:
+        list(gemini(models).stream([Message("user", "hi")]))
+    assert error.value.code == "provider_timeout"
+
+
+def test_real_client_gets_a_timeout_in_milliseconds(monkeypatch):
+    from google import genai
+
+    created = {}
+
+    def fake_client(**kwargs):
+        created.update(kwargs)
+        return SimpleNamespace(models=FakeModels())
+
+    monkeypatch.setattr(genai, "Client", fake_client)
+    GeminiModel(api_key="test-key", model="test-model", timeout=2.5)
+    assert created["api_key"] == "test-key"
+    assert created["http_options"].timeout == 2500
