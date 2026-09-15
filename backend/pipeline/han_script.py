@@ -12,7 +12,8 @@ def _converters() -> tuple[opencc.OpenCC, opencc.OpenCC]:
 
 
 def han_variant(text: str) -> HanVariant:
-    """Simplified text survives t2s unchanged but not s2t; Traditional is the reverse."""
+    """Simplified text survives t2s unchanged but not s2t; Traditional is the reverse.
+    Anything else, including empty, non-Han or mixed text, is ambiguous."""
     to_traditional, to_simplified = _converters()
     unchanged_by_s2t = to_traditional.convert(text) == text
     unchanged_by_t2s = to_simplified.convert(text) == text

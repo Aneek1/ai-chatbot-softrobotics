@@ -15,3 +15,12 @@ def test_characters_shared_by_both_are_ambiguous():
 
 def test_text_mixing_both_variants_is_ambiguous():
     assert han_variant("软體") == "ambiguous"
+
+
+def test_empty_text_is_ambiguous():
+    assert han_variant("") == "ambiguous"
+
+
+def test_non_han_text_is_ambiguous():
+    # The detector only calls this for Han-script labels; stray non-Han input must not look Chinese.
+    assert han_variant("silicone") == "ambiguous"
