@@ -15,7 +15,8 @@ class Settings(BaseSettings):
     e5_dir: str = "multilingual-e5-small"
 
     langid_specialist: str | None = None  # file in models_dir written by training/export.py
-    langid_min_confidence: float = 0.60
+    # smallest threshold with sentence accuracy >= 0.95 in results/langid-eval-2026-09-15.json
+    langid_min_confidence: float = 0.3
     retrieval_top_k: int = 6
 
     google_api_key: SecretStr | None = None

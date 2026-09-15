@@ -10,7 +10,7 @@ def test_defaults_point_inside_the_repo(monkeypatch):
     assert settings.ollama_model == "qwen3:8b"
     assert settings.ollama_timeout == 120.0
     assert settings.gemini_timeout == 120.0
-    assert settings.langid_min_confidence == 0.60
+    assert settings.langid_min_confidence == 0.3
 
 
 def test_gemini_needs_both_key_and_model(monkeypatch):
