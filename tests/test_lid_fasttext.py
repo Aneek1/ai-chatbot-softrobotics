@@ -89,7 +89,11 @@ def test_train_one_records_the_run(tmp_path):
     assert final["val"]["confusions"]["malay_indonesian"]["ind_Latn"]["(outside group)"] == 1
     metrics = read_metrics(run_dir)
     assert len(metrics) == 1 and metrics[0]["train_loss"] is None and metrics[0]["val_loss"] > 0
-    assert read_json(run_dir / "config.json")["config"]["family"] == "fasttext"
+    stored = read_json(run_dir / "config.json")["config"]
+    assert stored["family"] == "fasttext"
+    # every thread by default, which fastText cannot reproduce run to run, seed or no seed
+    assert fake.kwargs["thread"] == stored["threads"] >= 1
+    assert stored["reproducible"] is (stored["threads"] == 1)
     assert config_of_run(run_dir) == config
 
 
@@ -103,7 +107,11 @@ def test_diverged_training_is_recorded_not_raised(tmp_path):
         "ft-03",
         fasttext_module=fake,
         env={},
+        threads=1,
     )
+    assert fake.kwargs["thread"] == 1
+    stored = read_json(tmp_path / "runs" / "ft-03" / "config.json")["config"]
+    assert stored["threads"] == 1 and stored["reproducible"] is True
     assert final["status"] == "failed"
     assert final["error"] == "Encountered NaN."
     assert not (tmp_path / "runs" / "ft-03" / "train.txt").exists()

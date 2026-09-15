@@ -84,12 +84,21 @@ def train_one(
     run_id: str,
     fasttext_module=None,
     env: dict | None = None,
+    threads: int | None = None,
 ) -> dict:
     fasttext = fasttext_module or importlib.import_module("fasttext")
-    threads = os.cpu_count() or 1
+    # fastText's SGD is asynchronous across threads, so the seed only makes a run repeatable with
+    # threads=1. The default uses every thread for speed; config.json records which case applies.
+    threads = threads or os.cpu_count() or 1
     run = RunLog(
         run_id,
-        {"family": "fasttext", **asdict(config), "threads": threads, "data_dir": str(data_dir)},
+        {
+            "family": "fasttext",
+            **asdict(config),
+            "threads": threads,
+            "reproducible": threads == 1,
+            "data_dir": str(data_dir),
+        },
         runs_dir,
         env,
     )
@@ -152,18 +161,23 @@ def main() -> None:
     parser.add_argument(
         "--without-synthetic", metavar="RUN_ID", help="retrain that run's configuration on natural rows only"
     )
+    parser.add_argument(
+        "--threads", type=int, help="training threads (default: all); 1 makes a run repeatable with its seed"
+    )
     args = parser.parse_args()
     if args.sweep:
         path = run_grid(
             "fasttext",
             [asdict(c) for c in SWEEP],
-            lambda cfg, run_id: train_one(FastTextConfig(**cfg), args.data, args.runs, run_id),
+            lambda cfg, run_id: train_one(
+                FastTextConfig(**cfg), args.data, args.runs, run_id, threads=args.threads
+            ),
             args.runs,
         )
         print(f"Wrote {path}")
     if args.without_synthetic:
         config = replace(config_of_run(args.runs / args.without_synthetic), include_synthetic=False)
-        final = train_one(config, args.data, args.runs, new_run_id("fasttext-natural"))
+        final = train_one(config, args.data, args.runs, new_run_id("fasttext-natural"), threads=args.threads)
         print(f"{final['run_id']}: group macro-F1 {final.get('val', {}).get('group_macro_f1')}")
 
 
