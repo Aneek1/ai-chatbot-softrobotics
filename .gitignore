@@ -16,6 +16,7 @@ frontend/dist/
 models/
 data/index/
 data/history.db
+data/cache/
 
 # Training runs (chosen summaries are copied to results/)
 runs/
