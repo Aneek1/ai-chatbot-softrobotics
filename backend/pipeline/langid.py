@@ -3,10 +3,10 @@ from pathlib import Path
 from typing import Literal, Protocol
 
 from backend.pipeline.han_script import han_variant
-from backend.pipeline.languages import group_of
+from backend.pipeline.languages import CONFUSION_GROUPS, group_of
 from backend.pipeline.normalize import normalize, script_profile
 
-Stage = Literal["general", "specialist"]
+Stage = Literal["general", "specialist", "rule"]
 
 
 @dataclass(frozen=True)
@@ -58,25 +58,28 @@ class TwoStageDetector:
 
     def detect(self, text: str) -> Detection:
         clean = normalize(text)
-        if not clean:
+        candidates = self._general.top(clean, k=5) if clean else []
+        if not candidates:
             return Detection(candidates=(), chosen="und", uncertain=True, stage="general")
 
-        candidates = self._general.top(clean, k=5)
         top = candidates[0]
         stage: Stage = "general"
         group = group_of(top.code)
 
         if group is not None and self._specialist is not None:
-            candidates = self._specialist.top(clean, k=3)
-            top = candidates[0]
-            stage = "specialist"
-        elif group == "han":
-            stage = "specialist"
+            # A specialist may cover only some groups; labels outside this group don't count.
+            members = CONFUSION_GROUPS[group]
+            narrowed = [c for c in self._specialist.top(clean, k=3) if c.code in members]
+            if narrowed:
+                candidates, top, stage = narrowed, narrowed[0], "specialist"
+
+        if stage == "general" and group == "han":
+            stage = "rule"
             variant = han_variant(clean)
             if variant == "ambiguous":
                 return Detection(tuple(candidates[:3]), top.code, uncertain=True, stage=stage)
             top = Candidate(variant, top.probability)
-            candidates = [top, *candidates[1:]]
+            candidates = [top, *(c for c in candidates[1:] if c.code != variant)]
 
         uncertain = top.probability < self._min_confidence or script_profile(clean).mixed
         return Detection(tuple(candidates[:3]), top.code, uncertain=uncertain, stage=stage)
