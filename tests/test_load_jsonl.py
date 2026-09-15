@@ -52,6 +52,18 @@ def test_duplicate_id_names_the_line():
     assert index.count_by_language() == {}
 
 
+def test_invalid_json_names_the_line():
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    valid = (
+        '{"id": "ok", "text": "hello", "language": "eng_Latn", '
+        '"source": "s", "title": "t", "url": "u", "licence": "test-only"}'
+    )
+    broken = '{"id": "x", "text": "t", not valid json'
+    with pytest.raises(ValueError, match=r"^line 3: invalid JSON: Expecting property name"):
+        load_documents([valid, "", broken], index, count=len)
+    assert index.count_by_language() == {}
+
+
 def test_blank_lines_are_skipped():
     index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
     assert load_documents(["", "   "], index, count=len) == 0

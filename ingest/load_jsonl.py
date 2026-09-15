@@ -27,7 +27,14 @@ def load_documents(
     for line_number, line in enumerate(lines, start=1):
         if not line.strip():
             continue
-        doc = json.loads(line)
+        try:
+            doc = json.loads(line)
+        except json.JSONDecodeError as error:
+            # json counts lines within this one string, so its own position
+            # is always "line 1"; report the file's line number instead.
+            raise ValueError(
+                f"line {line_number}: invalid JSON: {error.msg} (column {error.colno})"
+            ) from error
         for field in REQUIRED:
             if field not in doc:
                 raise ValueError(f"line {line_number}: missing '{field}'")
