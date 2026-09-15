@@ -73,6 +73,43 @@ def test_error_line_in_stream_is_provider_error():
         list(model_with(handler).stream([Message("user", "hi")]))
 
 
+class BrokenStream(httpx.SyncByteStream):
+    """Sends one NDJSON line, then drops the connection, as when Ollama crashes mid-answer."""
+
+    def __iter__(self):
+        yield ndjson({"message": {"role": "assistant", "content": "Halo"}, "done": False}) + b"\n"
+        raise httpx.RemoteProtocolError("peer closed connection without sending complete message body")
+
+
+def test_connection_lost_mid_stream_is_provider_error():
+    def handler(request):
+        return httpx.Response(200, stream=BrokenStream())
+
+    pieces = []
+    with pytest.raises(ProviderError) as error:
+        for piece in model_with(handler).stream([Message("user", "hi")]):
+            pieces.append(piece)
+    assert pieces == ["Halo"]
+    assert error.value.code == "provider_error"
+
+
+def test_non_json_line_is_provider_error():
+    def handler(request):
+        return httpx.Response(200, content=b"<html>proxy</html>")
+
+    with pytest.raises(ProviderError) as error:
+        list(model_with(handler).stream([Message("user", "hi")]))
+    assert error.value.code == "provider_error"
+    assert "not JSON" in str(error.value)
+
+
+def test_null_message_is_skipped():
+    def handler(request):
+        return httpx.Response(200, content=ndjson({"message": None, "done": True}))
+
+    assert list(model_with(handler).stream([Message("user", "hi")])) == []
+
+
 def test_reachable_and_warm():
     def handler(request):
         if request.url.path == "/api/tags":

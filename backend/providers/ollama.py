@@ -37,10 +37,14 @@ class OllamaModel:
                 for line in response.iter_lines():
                     if not line:
                         continue
-                    chunk = json.loads(line)
+                    try:
+                        chunk = json.loads(line)
+                    except json.JSONDecodeError as exc:
+                        detail = f"Ollama sent a line that is not JSON: {line[:200]}"
+                        raise ProviderError("provider_error", detail) from exc
                     if "error" in chunk:
                         raise ProviderError("provider_error", f"Ollama error: {chunk['error']}")
-                    content = chunk.get("message", {}).get("content")
+                    content = (chunk.get("message") or {}).get("content")
                     if content:
                         yield content
                     if chunk.get("done"):
@@ -50,6 +54,10 @@ class OllamaModel:
         except httpx.TimeoutException as exc:
             detail = f"Ollama did not respond within {self._timeout} s"
             raise ProviderError("provider_timeout", detail) from exc
+        except httpx.HTTPError as exc:
+            # After the two clauses above: ConnectError and TimeoutException subclass HTTPError.
+            # Catches the connection dropping mid-answer (ReadError, RemoteProtocolError).
+            raise ProviderError("provider_error", f"Ollama request failed: {exc}") from exc
 
     def reachable(self) -> bool:
         try:
