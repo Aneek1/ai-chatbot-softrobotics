@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     glotlid_file: str = "glotlid-q.ftz"
     e5_dir: str = "multilingual-e5-small"
 
+    langid_specialist: str | None = None  # file in models_dir written by training/export.py
     langid_min_confidence: float = 0.60
     retrieval_top_k: int = 6
 

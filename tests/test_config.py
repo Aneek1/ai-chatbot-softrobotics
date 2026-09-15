@@ -37,3 +37,10 @@ def test_api_key_is_not_printed(monkeypatch):
 
 def test_env_file_is_read_from_the_repo_root():
     assert Settings.model_config["env_file"] == REPO_ROOT / ".env"
+
+
+def test_specialist_is_off_unless_configured(monkeypatch):
+    monkeypatch.delenv("LANGID_SPECIALIST", raising=False)
+    assert Settings(_env_file=None).langid_specialist is None
+    monkeypatch.setenv("LANGID_SPECIALIST", "lid-specialist-fasttext.ftz")
+    assert Settings(_env_file=None).langid_specialist == "lid-specialist-fasttext.ftz"
