@@ -1,4 +1,5 @@
 from backend.pipeline.chunk import chunk_text, split_sentences
+from backend.pipeline.normalize import normalize
 from tests.fakes import word_count
 
 
@@ -8,6 +9,19 @@ def test_latin_sentences_split_on_terminal_punctuation():
 
 def test_cjk_sentences_split_without_spaces():
     assert split_sentences("第一句。第二句！第三句？", "Hani") == ["第一句。", "第二句！", "第三句？"]
+
+
+def test_cjk_sentences_split_after_nfkc_folds_marks():
+    text = normalize("第一句。第二句！第三句？")
+    assert split_sentences(text, "Hani") == ["第一句。", "第二句!", "第三句?"]
+
+
+def test_devanagari_sentences_split_on_danda():
+    assert split_sentences("यह पहला वाक्य है। यह दूसरा है॥ अंत।", "Deva") == [
+        "यह पहला वाक्य है।",
+        "यह दूसरा है॥",
+        "अंत।",
+    ]
 
 
 def test_packs_sentences_with_overlap():

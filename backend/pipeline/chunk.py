@@ -5,8 +5,8 @@ from pathlib import Path
 TokenCounter = Callable[[str], int]
 
 CJK_SCRIPTS = frozenset({"Hani", "Jpan"})
-_CJK_SENTENCE_END = re.compile(r"(?<=[。！？])")
-_SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+_CJK_SENTENCE_END = re.compile(r"(?<=[。！？!?])")
+_SENTENCE_END = re.compile(r"(?<=[.!?।॥])\s+")
 
 
 def _joiner(script: str | None) -> str:
