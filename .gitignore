@@ -17,8 +17,12 @@ models/
 data/index/
 data/history.db
 
+# Training runs (chosen summaries are copied to results/)
+runs/
+
 # Tooling and OS
 .superpowers/
+.plans/
 .DS_Store
 .vscode/
 .idea/
