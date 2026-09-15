@@ -64,6 +64,24 @@ def test_invalid_json_names_the_line():
     assert index.count_by_language() == {}
 
 
+@pytest.mark.parametrize(("line", "kind"), [("42", "int"), ("null", "NoneType"), ('["a"]', "list")])
+def test_non_object_line_names_the_line(line, kind):
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    with pytest.raises(ValueError, match=f"^line 2: expected a JSON object, got {kind}$"):
+        load_documents(["", line], index, count=len)
+
+
+@pytest.mark.parametrize("value", ["[1, 2]", "7", "null"])
+def test_non_string_field_names_the_line(value):
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    doc = (
+        f'{{"id": {value}, "text": "hello", "language": "eng_Latn", '
+        '"source": "s", "title": "t", "url": "u", "licence": "test-only"}'
+    )
+    with pytest.raises(ValueError, match="^line 1: 'id' must be a string$"):
+        load_documents([doc], index, count=len)
+
+
 def test_blank_lines_are_skipped():
     index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
     assert load_documents(["", "   "], index, count=len) == 0

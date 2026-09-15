@@ -35,9 +35,14 @@ def load_documents(
             raise ValueError(
                 f"line {line_number}: invalid JSON: {error.msg} (column {error.colno})"
             ) from error
+        # A line can be valid JSON without being a document ("42", "null").
+        if not isinstance(doc, dict):
+            raise ValueError(f"line {line_number}: expected a JSON object, got {type(doc).__name__}")
         for field in REQUIRED:
             if field not in doc:
                 raise ValueError(f"line {line_number}: missing '{field}'")
+            if not isinstance(doc[field], str):
+                raise ValueError(f"line {line_number}: '{field}' must be a string")
         # Chunk ids derive from the document id, so a repeated id would
         # silently overwrite the earlier document's chunks in the index.
         if doc["id"] in seen:
