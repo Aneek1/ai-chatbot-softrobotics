@@ -74,13 +74,20 @@ class ChatService:
             return
 
         pieces: list[str] = []
+        stream = model.stream(build_messages(message, answer_language, hits))
         try:
-            for piece in model.stream(build_messages(message, answer_language, hits)):
+            for piece in stream:
                 pieces.append(piece)
                 yield "token", {"text": piece}
         except ProviderError as exc:
             yield "error", {"code": exc.code, "message": str(exc)}
             return
+        finally:
+            # Closing this generator early (the client left) must also end the provider's request.
+            # AnswerModel only promises an iterator; generators are the ones holding a request open.
+            close = getattr(stream, "close", None)
+            if close is not None:
+                close()
 
         check = check_citations("".join(pieces), source_count=len(hits))
         yield "citations", {"valid": list(check.valid), "removed": list(check.removed)}

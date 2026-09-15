@@ -1,5 +1,11 @@
+import gc
 import json
+import socket
+import threading
+import time
 
+import httpx
+import uvicorn
 from fastapi.testclient import TestClient
 
 from backend.app.chat_service import ChatService
@@ -102,3 +108,53 @@ def test_unexpected_failure_ends_stream_with_error_event():
         {"code": "internal_error", "message": "The server hit an unexpected error"},
     )
     assert "qdrant broke" not in response.text
+
+
+class SlowModel:
+    """Streams a long answer slowly and records when its stream is closed."""
+
+    name = "slow"
+
+    def __init__(self):
+        self.closed = threading.Event()
+
+    def stream(self, messages):
+        try:
+            for _ in range(200):
+                time.sleep(0.05)
+                yield "x"
+        finally:
+            self.closed.set()
+
+
+def test_client_disconnect_closes_the_answer_stream():
+    services = fake_services()
+    model = SlowModel()
+    services.chat.models = {"ollama": model}
+    sock = socket.socket()
+    sock.bind(("127.0.0.1", 0))
+    port = sock.getsockname()[1]
+    server = uvicorn.Server(
+        uvicorn.Config(create_app(services), log_level="warning", timeout_graceful_shutdown=2)
+    )
+    thread = threading.Thread(target=server.run, kwargs={"sockets": [sock]}, daemon=True)
+    # With the garbage collector off, only an explicit close can end the stream.
+    gc.disable()
+    try:
+        thread.start()
+        deadline = time.monotonic() + 10
+        while not server.started and time.monotonic() < deadline:
+            time.sleep(0.05)
+        with httpx.Client() as client:
+            with client.stream(
+                "POST", f"http://127.0.0.1:{port}/api/chat", json={"message": "소프트 로봇"}
+            ) as response:
+                for line in response.iter_lines():
+                    if line.startswith("event: token"):
+                        break
+        assert model.closed.wait(3), "answer stream still open after the client left"
+    finally:
+        gc.enable()
+        server.should_exit = True
+        thread.join(10)
+        sock.close()
