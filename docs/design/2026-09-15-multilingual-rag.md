@@ -116,7 +116,7 @@ scripts/compress_glotlid.py
   - Malay/Indonesian: `ind_Latn`, `zsm_Latn`
   - Han script: `cmn_Hani`, `yue_Hani`, `zho_Hans`, `zho_Hant`
   - Romanized Hindi: `hin_Latn`, `urd_Latn`, `eng_Latn`
-- **Until the trained specialist exists** (or when it has no answer inside the group): Han-script text goes through the OpenCC rule, reported as stage `rule`, (text unchanged by Traditional-to-Simplified conversion but changed by Simplified-to-Traditional is Simplified, the reverse is Traditional, otherwise ambiguous); the other groups keep the stage-1 result.
+- **Until the trained specialist exists** (or when it has no answer inside the group): Han-script text goes through the OpenCC rule, reported as stage `rule` (text unchanged by Traditional-to-Simplified conversion but changed by Simplified-to-Traditional is Simplified, the reverse is Traditional, otherwise ambiguous); the other groups keep the stage-1 result.
 - **Mapping:** a table converts labels to display names and flags the 8 supported languages.
 - **Uncertainty:** a result is `uncertain` if the top probability is below `LANGID_MIN_CONFIDENCE` (default 0.60), two different scripts each make up more than 30% of letters, or the Han rule is ambiguous. The default threshold is re-tuned from the evaluation's threshold sweep.
 - **Answer language:**
