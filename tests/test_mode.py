@@ -3,7 +3,7 @@ import time
 
 import pytest
 
-from backend.privacy.mode import ModeState, ModeSwitchTimeout
+from backend.privacy.mode import ModeState, ModeSwitchFailed, ModeSwitchTimeout
 
 
 def wait_until(condition, seconds=5.0):
@@ -86,6 +86,38 @@ def test_listeners_run_only_when_the_mode_changes():
     mode.set_private(True, timeout=1)
     mode.set_private(False, timeout=1)
     assert calls == [True, False]
+
+
+def test_a_listener_that_raises_keeps_the_old_mode():
+    mode = ModeState()
+
+    def boom(private):
+        raise ValueError("boom")
+
+    mode.on_change(boom)
+    with pytest.raises(ModeSwitchFailed, match="mode unchanged") as caught:
+        mode.set_private(True, timeout=1)
+    assert [str(error) for error in caught.value.errors] == ["boom"]
+    assert mode.private is False
+    assert mode.switching is False
+    assert mode.begin_answer() is False
+    mode.end_answer()
+
+
+def test_every_listener_runs_even_when_one_raises():
+    mode = ModeState()
+    calls = []
+
+    def boom(private):
+        calls.append("boom")
+        raise ValueError("boom")
+
+    mode.on_change(lambda private: calls.append("first"))
+    mode.on_change(boom)
+    mode.on_change(lambda private: calls.append("last"))
+    with pytest.raises(ModeSwitchFailed):
+        mode.set_private(True, timeout=1)
+    assert calls == ["first", "boom", "last"]
 
 
 def test_end_answer_without_begin_is_an_error():
