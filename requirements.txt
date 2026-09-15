@@ -1,6 +1,0 @@
-pandas
-spacy
-google-generativeai
-google-api-python-client
-spacy[transformers]
-en-core-web-sm
