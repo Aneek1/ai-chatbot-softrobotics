@@ -1,9 +1,22 @@
+import pytest
+from pydantic import ValidationError
+
 from backend.app.config import REPO_ROOT, Settings
 
 
 def test_defaults_point_inside_the_repo(monkeypatch):
-    for key in ("GOOGLE_API_KEY", "GEMINI_MODEL", "GEMINI_TIMEOUT", "OLLAMA_URL", "OLLAMA_MODEL",
-                "OLLAMA_TIMEOUT", "LANGID_MIN_CONFIDENCE", "RETRIEVAL_TOP_K", "MODELS_DIR", "INDEX_DIR"):
+    for key in (
+        "GOOGLE_API_KEY",
+        "GEMINI_MODEL",
+        "GEMINI_TIMEOUT",
+        "OLLAMA_URL",
+        "OLLAMA_MODEL",
+        "OLLAMA_TIMEOUT",
+        "LANGID_MIN_CONFIDENCE",
+        "RETRIEVAL_TOP_K",
+        "MODELS_DIR",
+        "INDEX_DIR",
+    ):
         monkeypatch.delenv(key, raising=False)
     settings = Settings(_env_file=None)
     assert settings.models_dir == REPO_ROOT / "models"
@@ -44,3 +57,67 @@ def test_specialist_is_off_unless_configured(monkeypatch):
     assert Settings(_env_file=None).langid_specialist is None
     monkeypatch.setenv("LANGID_SPECIALIST", "lid-specialist-fasttext.ftz")
     assert Settings(_env_file=None).langid_specialist == "lid-specialist-fasttext.ftz"
+
+
+PRIVACY_KEYS = (
+    "PRIVATE_MODE",
+    "PRIVATE_PROXY",
+    "MODE_SWITCH_TIMEOUT",
+    "WEB_SEARCH",
+    "GOOGLE_SEARCH_KEY",
+    "GOOGLE_SEARCH_ENGINE_ID",
+    "SEARCH_TIMEOUT",
+    "SEARCH_MAX_RESULTS",
+    "HISTORY_DB",
+)
+
+
+def test_privacy_and_search_defaults(monkeypatch):
+    for key in PRIVACY_KEYS:
+        monkeypatch.delenv(key, raising=False)
+    settings = Settings(_env_file=None)
+    assert settings.private_mode is False
+    assert settings.private_proxy is None
+    assert settings.mode_switch_timeout == 150.0
+    assert settings.web_search == "google"
+    assert settings.google_search_configured is False
+    assert settings.search_timeout == 10.0
+    assert settings.search_max_results == 5
+    assert settings.history_db == REPO_ROOT / "data" / "history.db"
+
+
+def test_google_search_needs_key_and_engine_id(monkeypatch):
+    monkeypatch.setenv("GOOGLE_SEARCH_KEY", "search-key")
+    monkeypatch.delenv("GOOGLE_SEARCH_ENGINE_ID", raising=False)
+    assert Settings(_env_file=None).google_search_configured is False
+
+    monkeypatch.setenv("GOOGLE_SEARCH_ENGINE_ID", "engine-id")
+    settings = Settings(_env_file=None)
+    assert settings.google_search_configured is True
+    assert "search-key" not in repr(settings)
+
+
+def test_socks5h_proxy_is_accepted(monkeypatch):
+    monkeypatch.setenv("PRIVATE_PROXY", "socks5h://127.0.0.1:9050")
+    assert Settings(_env_file=None).private_proxy == "socks5h://127.0.0.1:9050"
+
+
+def test_empty_proxy_means_no_proxy(monkeypatch):
+    monkeypatch.setenv("PRIVATE_PROXY", "")
+    assert Settings(_env_file=None).private_proxy is None
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["socks5://127.0.0.1:9050", "http://127.0.0.1:8080", "socks5h://127.0.0.1", "127.0.0.1:9050"],
+)
+def test_proxy_that_would_resolve_names_locally_or_lacks_a_port_is_rejected(monkeypatch, value):
+    monkeypatch.setenv("PRIVATE_PROXY", value)
+    with pytest.raises(ValidationError, match="socks5h://host:port"):
+        Settings(_env_file=None)
+
+
+def test_unknown_web_search_engine_is_rejected(monkeypatch):
+    monkeypatch.setenv("WEB_SEARCH", "bing")
+    with pytest.raises(ValidationError):
+        Settings(_env_file=None)
