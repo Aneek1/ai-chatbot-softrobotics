@@ -75,3 +75,22 @@ def test_health_without_ollama_or_index():
         "gemini_configured": False,
         "documents_by_language": {},
     }
+
+
+class BrokenRetriever:
+    def search(self, query, top_k):
+        raise RuntimeError("qdrant broke")
+
+
+def test_unexpected_failure_ends_stream_with_error_event():
+    services = fake_services()
+    services.chat.retriever = BrokenRetriever()
+    with TestClient(create_app(services)) as client:
+        response = client.post("/api/chat", json={"message": "소프트 로봇"})
+    assert response.status_code == 200
+    events = parse_sse(response.text)
+    assert events[-1] == (
+        "error",
+        {"code": "internal_error", "message": "The server hit an unexpected error"},
+    )
+    assert "qdrant broke" not in response.text
