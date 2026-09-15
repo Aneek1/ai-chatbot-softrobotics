@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+spacy_env/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Local data, models, secrets
+.env
+models/
+data/index/
+data/history.db
+
+# Tooling and OS
+.superpowers/
+.DS_Store
+.vscode/
+.idea/
