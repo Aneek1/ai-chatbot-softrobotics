@@ -1,0 +1,1 @@
+{"epoch": 25, "elapsed_seconds": 119.1, "train_loss": null, "val_loss": 0.7878, "val_macro_f1": 0.8637, "val_group_macro_f1": 0.788, "val_group_f1": {"malay_indonesian": 0.9398, "han": 0.968, "romanized_hindi": 0.5668}}

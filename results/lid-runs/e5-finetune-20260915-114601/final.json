@@ -1,0 +1,147 @@
+{
+  "run_id": "e5-finetune-20260915-114601",
+  "wall_clock_seconds": 2167.7,
+  "family": "e5_finetune",
+  "status": "ok",
+  "best_epoch": 2,
+  "epochs_run": 2,
+  "steps": 22500,
+  "planned_steps": 22500,
+  "steps_per_epoch": 11250,
+  "seconds_per_step": 0.1203,
+  "stop_reason": "max_epochs",
+  "peak_gpu_memory_mib": 2747,
+  "val": {
+    "count": 24000,
+    "accuracy": 0.946,
+    "macro_f1": 0.946,
+    "group_macro_f1": 0.9132,
+    "group_f1": {
+      "malay_indonesian": 0.9479,
+      "han": 0.9849,
+      "romanized_hindi": 0.8423
+    },
+    "per_label": {
+      "eng_Latn": {
+        "precision": 0.9758,
+        "recall": 0.9865,
+        "f1": 0.9811,
+        "support": 2000
+      },
+      "ind_Latn": {
+        "precision": 0.9456,
+        "recall": 0.948,
+        "f1": 0.9468,
+        "support": 2000
+      },
+      "zsm_Latn": {
+        "precision": 0.9549,
+        "recall": 0.943,
+        "f1": 0.9489,
+        "support": 2000
+      },
+      "zho_Hans": {
+        "precision": 0.9869,
+        "recall": 0.983,
+        "f1": 0.985,
+        "support": 2000
+      },
+      "zho_Hant": {
+        "precision": 0.9835,
+        "recall": 0.986,
+        "f1": 0.9848,
+        "support": 2000
+      },
+      "jpn_Jpan": {
+        "precision": 0.998,
+        "recall": 0.9955,
+        "f1": 0.9967,
+        "support": 2000
+      },
+      "kor_Hang": {
+        "precision": 0.996,
+        "recall": 0.996,
+        "f1": 0.996,
+        "support": 2000
+      },
+      "tam_Taml": {
+        "precision": 0.999,
+        "recall": 0.9945,
+        "f1": 0.9967,
+        "support": 2000
+      },
+      "hin_Deva": {
+        "precision": 0.9822,
+        "recall": 0.9955,
+        "f1": 0.9888,
+        "support": 2000
+      },
+      "hin_Latn": {
+        "precision": 0.7633,
+        "recall": 0.787,
+        "f1": 0.775,
+        "support": 2000
+      },
+      "urd_Latn": {
+        "precision": 0.7783,
+        "recall": 0.7635,
+        "f1": 0.7708,
+        "support": 2000
+      },
+      "other": {
+        "precision": 0.9908,
+        "recall": 0.973,
+        "f1": 0.9818,
+        "support": 2000
+      }
+    },
+    "confusions": {
+      "malay_indonesian": {
+        "ind_Latn": {
+          "ind_Latn": 1896,
+          "zsm_Latn": 83,
+          "(outside group)": 21
+        },
+        "zsm_Latn": {
+          "ind_Latn": 97,
+          "zsm_Latn": 1886,
+          "(outside group)": 17
+        }
+      },
+      "han": {
+        "zho_Hans": {
+          "zho_Hans": 1966,
+          "zho_Hant": 30,
+          "(outside group)": 4
+        },
+        "zho_Hant": {
+          "zho_Hans": 25,
+          "zho_Hant": 1972,
+          "(outside group)": 3
+        }
+      },
+      "romanized_hindi": {
+        "eng_Latn": {
+          "eng_Latn": 1973,
+          "hin_Latn": 9,
+          "urd_Latn": 2,
+          "(outside group)": 16
+        },
+        "hin_Latn": {
+          "eng_Latn": 0,
+          "hin_Latn": 1574,
+          "urd_Latn": 424,
+          "(outside group)": 2
+        },
+        "urd_Latn": {
+          "eng_Latn": 2,
+          "hin_Latn": 464,
+          "urd_Latn": 1527,
+          "(outside group)": 7
+        }
+      }
+    }
+  },
+  "model_file": "model.pt",
+  "model_bytes": 470703567
+}

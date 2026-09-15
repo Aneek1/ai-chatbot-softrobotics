@@ -1,0 +1,143 @@
+{
+  "run_id": "fasttext-05-20260915-110433",
+  "wall_clock_seconds": 129.5,
+  "family": "fasttext",
+  "status": "ok",
+  "train_lines": 1171650,
+  "best_epoch": 25,
+  "val": {
+    "count": 24000,
+    "accuracy": 0.9187,
+    "macro_f1": 0.9159,
+    "group_macro_f1": 0.8765,
+    "group_f1": {
+      "malay_indonesian": 0.9439,
+      "han": 0.9778,
+      "romanized_hindi": 0.7641
+    },
+    "per_label": {
+      "eng_Latn": {
+        "precision": 0.9623,
+        "recall": 0.9815,
+        "f1": 0.9718,
+        "support": 2000
+      },
+      "ind_Latn": {
+        "precision": 0.942,
+        "recall": 0.9415,
+        "f1": 0.9417,
+        "support": 2000
+      },
+      "zsm_Latn": {
+        "precision": 0.9351,
+        "recall": 0.9575,
+        "f1": 0.9461,
+        "support": 2000
+      },
+      "zho_Hans": {
+        "precision": 0.9848,
+        "recall": 0.9725,
+        "f1": 0.9786,
+        "support": 2000
+      },
+      "zho_Hant": {
+        "precision": 0.9746,
+        "recall": 0.9795,
+        "f1": 0.9771,
+        "support": 2000
+      },
+      "jpn_Jpan": {
+        "precision": 0.991,
+        "recall": 0.9925,
+        "f1": 0.9918,
+        "support": 2000
+      },
+      "kor_Hang": {
+        "precision": 0.9965,
+        "recall": 0.9955,
+        "f1": 0.996,
+        "support": 2000
+      },
+      "tam_Taml": {
+        "precision": 0.999,
+        "recall": 0.9955,
+        "f1": 0.9972,
+        "support": 2000
+      },
+      "hin_Deva": {
+        "precision": 0.9436,
+        "recall": 0.987,
+        "f1": 0.9648,
+        "support": 2000
+      },
+      "hin_Latn": {
+        "precision": 0.7699,
+        "recall": 0.4885,
+        "f1": 0.5977,
+        "support": 2000
+      },
+      "urd_Latn": {
+        "precision": 0.6483,
+        "recall": 0.8165,
+        "f1": 0.7227,
+        "support": 2000
+      },
+      "other": {
+        "precision": 0.8929,
+        "recall": 0.917,
+        "f1": 0.9048,
+        "support": 2000
+      }
+    },
+    "confusions": {
+      "malay_indonesian": {
+        "ind_Latn": {
+          "ind_Latn": 1883,
+          "zsm_Latn": 99,
+          "(outside group)": 18
+        },
+        "zsm_Latn": {
+          "ind_Latn": 65,
+          "zsm_Latn": 1915,
+          "(outside group)": 20
+        }
+      },
+      "han": {
+        "zho_Hans": {
+          "zho_Hans": 1945,
+          "zho_Hant": 41,
+          "(outside group)": 14
+        },
+        "zho_Hant": {
+          "zho_Hans": 27,
+          "zho_Hant": 1959,
+          "(outside group)": 14
+        }
+      },
+      "romanized_hindi": {
+        "eng_Latn": {
+          "eng_Latn": 1963,
+          "hin_Latn": 1,
+          "urd_Latn": 7,
+          "(outside group)": 29
+        },
+        "hin_Latn": {
+          "eng_Latn": 44,
+          "hin_Latn": 977,
+          "urd_Latn": 869,
+          "(outside group)": 110
+        },
+        "urd_Latn": {
+          "eng_Latn": 8,
+          "hin_Latn": 266,
+          "urd_Latn": 1633,
+          "(outside group)": 93
+        }
+      }
+    }
+  },
+  "val_loss": 0.3134,
+  "model_file": "model.bin",
+  "model_bytes": 356107431,
+  "note": "fastText's Python API reports no training loss; one metrics line follows the last epoch."
+}

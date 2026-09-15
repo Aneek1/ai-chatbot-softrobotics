@@ -1,0 +1,2 @@
+{"epoch": 1, "elapsed_seconds": 1084.6, "train_loss": 0.2929, "val_loss": 0.1426, "val_macro_f1": 0.9384, "val_group_macro_f1": 0.902, "val_group_f1": {"malay_indonesian": 0.9408, "han": 0.9821, "romanized_hindi": 0.8227}, "steps": 11250}
+{"epoch": 2, "elapsed_seconds": 2166.9, "train_loss": 0.1256, "val_loss": 0.1279, "val_macro_f1": 0.946, "val_group_macro_f1": 0.9132, "val_group_f1": {"malay_indonesian": 0.9479, "han": 0.9849, "romanized_hindi": 0.8423}, "steps": 22500}
