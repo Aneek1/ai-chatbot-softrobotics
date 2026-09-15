@@ -15,7 +15,8 @@ class ChatRequest(BaseModel):
     message: str = Field(min_length=1, max_length=4000)
     chat_id: str | None = None
     model: Literal["ollama", "gemini"] = "ollama"
-    language_override: str | None = None
+    # A GlotLID label from the override menu; free text would reach the system prompt.
+    language_override: str | None = Field(default=None, pattern=r"^[a-z]{3}_[A-Z][a-z]{3}$")
 
 
 @router.post("/api/chat", response_class=EventSourceResponse)
