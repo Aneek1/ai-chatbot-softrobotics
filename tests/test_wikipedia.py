@@ -81,10 +81,29 @@ def test_chinese_pages_ask_for_the_simplified_variant():
     assert seen["params"]["variant"] == "zh-hans"
 
 
+def test_a_rate_limited_request_waits_and_is_retried():
+    statuses = [429, 200]
+    waits = []
+
+    def handler(request):
+        if statuses.pop(0) == 429:
+            return httpx.Response(429, text="slow down", headers={"Retry-After": "25"})
+        return httpx.Response(200, json=payload("en-soft-robotics.json"))
+
+    client = WikipediaClient(
+        client=httpx.Client(transport=httpx.MockTransport(handler)), sleep=waits.append
+    )
+    document, _ = client.page("en", "Soft robotics", "2026-09-16")
+    assert document.id == "wikipedia:en:50647426"
+    assert waits == [25.0]
+
+
 def test_an_error_status_is_reported():
     def handler(request):
         return httpx.Response(429, text="slow down")
 
-    client = WikipediaClient(client=httpx.Client(transport=httpx.MockTransport(handler)))
+    client = WikipediaClient(
+        client=httpx.Client(transport=httpx.MockTransport(handler)), sleep=lambda seconds: None
+    )
     with pytest.raises(IngestError, match="en.wikipedia.org returned 429"):
         client.page("en", "Soft robotics", "2026-09-16")

@@ -71,6 +71,15 @@ def parse_langlinks(payload: dict) -> dict[str, str]:
     }
 
 
+def retry_delay(response: httpx.Response, default: float, cap: float = 60.0) -> float:
+    """Seconds to wait after a 429: the Retry-After header when the API sends a usable one."""
+    try:
+        seconds = float(response.headers.get("Retry-After", ""))
+    except ValueError:
+        seconds = default
+    return max(0.0, min(seconds, cap))
+
+
 class WikipediaClient:
     def __init__(
         self,
@@ -78,25 +87,35 @@ class WikipediaClient:
         timeout: float = 30.0,
         pause: float = 0.5,
         sleep: Callable[[float], None] = time.sleep,
+        retries: int = 2,
     ):
         self._client = client or httpx.Client(timeout=timeout)
         self._pause = pause
         self._sleep = sleep
+        self._retries = retries
         self._requested = False
 
     def _get(self, wiki_lang: str, params: dict[str, str]) -> dict:
         if self._requested:
             self._sleep(self._pause)
         self._requested = True
-        try:
-            response = self._client.get(
-                api_url(wiki_lang), params=params, headers={"User-Agent": USER_AGENT}
-            )
-        except httpx.HTTPError as exc:
-            raise IngestError(f"Wikipedia request failed ({type(exc).__name__})") from exc
-        if response.status_code != 200:
-            raise IngestError(f"{wiki_lang}.wikipedia.org returned {response.status_code}")
-        return response.json()
+        attempts = self._retries + 1
+        for attempt in range(attempts):
+            try:
+                response = self._client.get(
+                    api_url(wiki_lang), params=params, headers={"User-Agent": USER_AGENT}
+                )
+            except httpx.HTTPError as exc:
+                raise IngestError(f"Wikipedia request failed ({type(exc).__name__})") from exc
+            if response.status_code == 429 and attempt + 1 < attempts:
+                # The API asks callers to back off and says for how long. One 429 must not throw
+                # away every page fetched so far, so wait the delay out and ask again.
+                self._sleep(retry_delay(response, self._pause))
+                continue
+            if response.status_code != 200:
+                raise IngestError(f"{wiki_lang}.wikipedia.org returned {response.status_code}")
+            return response.json()
+        raise IngestError(f"{wiki_lang}.wikipedia.org returned 429")  # pragma: no cover
 
     def page(
         self, wiki_lang: str, title: str, retrieved_at: str | None = None
