@@ -17,6 +17,7 @@ models/
 data/index/
 data/history.db
 data/cache/
+data/knowledge-base.jsonl
 
 # Training runs (chosen summaries are copied to results/)
 runs/
