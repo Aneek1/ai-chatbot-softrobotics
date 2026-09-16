@@ -47,3 +47,21 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run check:bundle
+
+  image:
+    name: Image (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            platform: linux/amd64
+          - runner: ubuntu-24.04-arm
+            platform: linux/arm64
+    steps:
+      - uses: actions/checkout@v5
+      # Each architecture is built on a runner of that architecture, so nothing runs under emulation
+      # and no image leaves the runner.
+      - run: docker build --tag softrobotics-assistant:ci .
+      - run: docker run --rm softrobotics-assistant:ci python -c "import backend.app.main"

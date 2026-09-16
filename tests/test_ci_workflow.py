@@ -55,3 +55,16 @@ def test_the_frontend_job_lints_type_checks_tests_builds_and_checks_the_bundle()
 def test_the_workflow_runs_on_a_push_and_on_a_pull_request():
     assert "push" in TRIGGERS
     assert "pull_request" in TRIGGERS
+
+
+def test_the_image_is_built_for_both_architectures_on_native_runners():
+    include = JOBS["image"]["strategy"]["matrix"]["include"]
+    assert {entry["platform"] for entry in include} == {"linux/amd64", "linux/arm64"}
+    assert {entry["runner"] for entry in include} == {"ubuntu-latest", "ubuntu-24.04-arm"}
+
+
+def test_the_image_job_publishes_nothing():
+    job = yaml.safe_dump(JOBS["image"])
+    assert "docker push" not in job
+    assert "login" not in job
+    assert "registry" not in job
