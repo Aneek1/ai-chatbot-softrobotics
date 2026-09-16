@@ -1,0 +1,28 @@
+# The app and a local Ollama. Models stay on the host and are mounted read-only; the index and the
+# chat history live in a named volume, so rebuilding the image keeps them.
+services:
+  app:
+    build: .
+    image: softrobotics-assistant
+    ports:
+      - "8000:8000"
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:8b}
+      WEB_SEARCH: ${WEB_SEARCH:-off}
+      PRIVATE_MODE: ${PRIVATE_MODE:-false}
+    volumes:
+      - ./models:/models:ro
+      - app-data:/data
+    depends_on:
+      - ollama
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama:/root/.ollama
+
+volumes:
+  app-data:
+  ollama:
