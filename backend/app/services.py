@@ -3,7 +3,7 @@ from dataclasses import dataclass, field
 from backend.app.chat_service import ChatService
 from backend.app.config import Settings
 from backend.pipeline.embeddings import E5Embedder
-from backend.pipeline.langid import Detection, FastTextScorer, TwoStageDetector
+from backend.pipeline.langid import FastTextScorer, TwoStageDetector
 from backend.pipeline.retrieve import ChunkIndex
 from backend.pipeline.specialist import load_specialist
 from backend.privacy.egress import EgressGuard
@@ -30,7 +30,6 @@ class Privacy:
 class Services:
     settings: Settings
     chat: ChatService
-    detections: dict[str, list[Detection]]
     ollama: OllamaModel | None
     index: ChunkIndex | None
     detector_name: str
@@ -106,7 +105,6 @@ def build_services(settings: Settings, privacy: Privacy | None = None) -> Servic
     return Services(
         settings=settings,
         chat=chat,
-        detections={},
         ollama=ollama,
         index=index,
         detector_name=(
