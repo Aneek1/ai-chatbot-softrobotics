@@ -4,6 +4,37 @@ This repository is being rebuilt from a Tkinter prototype into a multilingual re
 
 The design is in [docs/design/2026-09-15-multilingual-rag.md](docs/design/2026-09-15-multilingual-rag.md). Setup instructions will be added once the backend runs end to end.
 
+## Knowledge base
+
+Answers are retrieved from a local index built from three sources, each document carrying its
+source, link, licence, retrieval date and revision:
+
+- `data/methods.csv`: fabrication methods written by hand. A row is indexed only when someone has
+  checked it against a source that anyone can open, and recorded that source, its licence, their
+  name and the date. Rows that are not checked stay in the file, are counted in `DATASHEET.md`, and
+  are never used to answer a question. `docs/knowledge-base-curation.md` has the rules and lists the
+  nine methods the Tkinter prototype held: none could be sourced, so they were dropped, as were the
+  numeric property values that prototype claimed, and the file ships with its header row only.
+- arXiv: titles and abstracts from the arXiv API. arXiv metadata is CC0; full texts are not fetched.
+- Wikipedia: the lead section of an article and of the same article in the supported languages that
+  have one, with the revision id. CC BY-SA 4.0.
+
+Build it and index it:
+
+```bash
+PYTHONUTF8=1 uv run python -m ingest.build_kb
+PYTHONUTF8=1 uv run python -m ingest.load_jsonl data/knowledge-base.jsonl
+PYTHONUTF8=1 uv run python -m ingest.datasheet
+```
+
+The first command writes `data/knowledge-base.jsonl` (not committed), the second indexes it into
+`data/index/`, and the third writes `DATASHEET.md`: how many documents there are per language,
+source and licence, and which supported languages have none.
+
+These three scripts reach the network themselves and run outside the backend process, so the egress
+guard described below does not apply to them. They connect to `export.arxiv.org` and the
+`*.wikipedia.org` API hosts, and nothing else.
+
 ## Private mode
 
 Private mode is an app-wide switch (`PUT /api/mode`, or `PRIVATE_MODE=true` at startup).
