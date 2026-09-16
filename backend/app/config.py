@@ -13,6 +13,7 @@ class Settings(BaseSettings):
 
     models_dir: Path = REPO_ROOT / "models"
     index_dir: Path = REPO_ROOT / "data" / "index"
+    frontend_dist: Path = REPO_ROOT / "frontend" / "dist"
     glotlid_file: str = "glotlid-q.ftz"
     e5_dir: str = "multilingual-e5-small"
 
