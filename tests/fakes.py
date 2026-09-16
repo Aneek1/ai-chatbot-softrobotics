@@ -54,3 +54,20 @@ class FakeModel:
         if self._error is not None:
             raise self._error
         yield from self._pieces
+
+
+class FakeSearch:
+    """Returns scripted web results or raises; records the queries it received."""
+
+    name = "fake-search"
+
+    def __init__(self, results: Sequence = (), error: Exception | None = None):
+        self._results = list(results)
+        self._error = error
+        self.queries: list[str] = []
+
+    def search(self, query: str, max_results: int) -> list:
+        self.queries.append(query)
+        if self._error is not None:
+            raise self._error
+        return self._results[:max_results]

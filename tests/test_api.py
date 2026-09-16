@@ -54,7 +54,16 @@ def test_chat_streams_server_sent_events():
     assert response.status_code == 200
     assert response.headers["content-type"].startswith("text/event-stream")
     events = parse_sse(response.text)
-    assert [e for e, _ in events] == ["language", "sources", "notice", "token", "citations", "done"]
+    assert [e for e, _ in events] == [
+        "language",
+        "sources",
+        "web",
+        "notice",
+        "notice",
+        "token",
+        "citations",
+        "done",
+    ]
     assert events[0][1]["chosen"] == "kor_Hang"
 
 
