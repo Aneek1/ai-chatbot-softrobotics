@@ -21,6 +21,10 @@ class Chunk:
     title: str
     url: str
     licence: str
+    # Provenance (spec 6.1). Empty for chunks indexed before these fields existed.
+    script: str = ""
+    retrieved_at: str = ""
+    revision: str = ""
 
 
 @dataclass(frozen=True)

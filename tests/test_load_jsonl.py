@@ -85,3 +85,41 @@ def test_non_string_field_names_the_line(value):
 def test_blank_lines_are_skipped():
     index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
     assert load_documents(["", "   "], index, count=len) == 0
+
+
+def test_provenance_fields_are_kept():
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    doc = (
+        '{"id": "w1", "text": "hello", "language": "eng_Latn", "source": "wikipedia", '
+        '"title": "t", "url": "https://example.invalid", "licence": "CC BY-SA 4.0", '
+        '"script": "Latn", "retrieved_at": "2026-09-16", "revision": "1368852135"}'
+    )
+    assert load_documents([doc], index, count=len) == 1
+    chunk = index.search("hello", top_k=1)[0].chunk
+    assert chunk.script == "Latn"
+    assert chunk.retrieved_at == "2026-09-16"
+    assert chunk.revision == "1368852135"
+
+
+def test_script_is_derived_when_the_document_does_not_give_one():
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    doc = (
+        '{"id": "k1", "text": "소프트 로봇", "language": "kor_Hang", "source": "wikipedia", '
+        '"title": "t", "url": "https://example.invalid", "licence": "CC BY-SA 4.0"}'
+    )
+    assert load_documents([doc], index, count=len) == 1
+    chunk = index.search("소프트", top_k=1)[0].chunk
+    assert chunk.script == "Hang"
+    assert chunk.retrieved_at == ""
+    assert chunk.revision == ""
+
+
+@pytest.mark.parametrize("name", ["script", "retrieved_at", "revision"])
+def test_non_string_provenance_field_names_the_line(name):
+    index = ChunkIndex(QdrantClient(location=":memory:"), FakeEmbedder())
+    doc = (
+        '{"id": "x", "text": "hello", "language": "eng_Latn", "source": "s", '
+        '"title": "t", "url": "u", "licence": "test-only", ' + f'"{name}": 7' + "}"
+    )
+    with pytest.raises(ValueError, match=f"^line 1: '{name}' must be a string$"):
+        load_documents([doc], index, count=len)

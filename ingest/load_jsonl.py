@@ -13,6 +13,7 @@ from backend.pipeline.normalize import normalize, script_profile
 from backend.pipeline.retrieve import Chunk, ChunkIndex
 
 REQUIRED = ("id", "text", "language", "source", "title", "url", "licence")
+OPTIONAL = ("script", "retrieved_at", "revision")
 
 
 def load_documents(
@@ -43,13 +44,17 @@ def load_documents(
                 raise ValueError(f"line {line_number}: missing '{field}'")
             if not isinstance(doc[field], str):
                 raise ValueError(f"line {line_number}: '{field}' must be a string")
+        for field in OPTIONAL:
+            if field in doc and not isinstance(doc[field], str):
+                raise ValueError(f"line {line_number}: '{field}' must be a string")
         # Chunk ids derive from the document id, so a repeated id would
         # silently overwrite the earlier document's chunks in the index.
         if doc["id"] in seen:
             raise ValueError(f"line {line_number}: duplicate id '{doc['id']}'")
         seen.add(doc["id"])
         text = normalize(doc["text"])
-        pieces = chunk_text(text, script_profile(text).dominant, count, max_tokens, overlap_tokens)
+        script = doc.get("script") or script_profile(text).dominant or ""
+        pieces = chunk_text(text, script or None, count, max_tokens, overlap_tokens)
         chunks.extend(
             Chunk(
                 id=f"{doc['id']}:{n}",
@@ -60,6 +65,9 @@ def load_documents(
                 title=doc["title"],
                 url=doc["url"],
                 licence=doc["licence"],
+                script=script,
+                retrieved_at=doc.get("retrieved_at", ""),
+                revision=doc.get("revision", ""),
             )
             for n, piece in enumerate(pieces)
         )
