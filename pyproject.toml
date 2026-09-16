@@ -20,7 +20,11 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pytest", "ruff"]
+dev = [
+    "pytest",
+    "pyyaml>=6.0.3",
+    "ruff",
+]
 train = [
     "torch==2.14.0",
     "transformers>=5.17",
