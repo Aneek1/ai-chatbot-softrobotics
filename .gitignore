@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+spacy_env/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Local data, models, secrets
+.env
+models/
+data/index/
+data/history.db
+data/cache/
+data/knowledge-base.jsonl
+
+# Training runs (chosen summaries are copied to results/)
+runs/
+
+# Tooling and OS
+.superpowers/
+.plans/
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,11 @@
+{
+  "kind": "e5_finetune",
+  "max_length": 8,
+  "pad_id": 0,
+  "tokenizer": "tokenizer.json",
+  "labels": [
+    "ind_Latn",
+    "zsm_Latn",
+    "other"
+  ]
+}

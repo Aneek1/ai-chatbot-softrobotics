@@ -1,0 +1,141 @@
+{
+  "run_id": "e5-head-04-20260915-113244",
+  "wall_clock_seconds": 54.6,
+  "family": "e5_head",
+  "status": "ok",
+  "best_epoch": 22,
+  "epochs_run": 25,
+  "val": {
+    "count": 24000,
+    "accuracy": 0.9083,
+    "macro_f1": 0.9072,
+    "group_macro_f1": 0.8811,
+    "group_f1": {
+      "malay_indonesian": 0.9055,
+      "han": 0.9791,
+      "romanized_hindi": 0.7994
+    },
+    "per_label": {
+      "eng_Latn": {
+        "precision": 0.9725,
+        "recall": 0.9725,
+        "f1": 0.9725,
+        "support": 2000
+      },
+      "ind_Latn": {
+        "precision": 0.9197,
+        "recall": 0.905,
+        "f1": 0.9123,
+        "support": 2000
+      },
+      "zsm_Latn": {
+        "precision": 0.8855,
+        "recall": 0.9125,
+        "f1": 0.8988,
+        "support": 2000
+      },
+      "zho_Hans": {
+        "precision": 0.9829,
+        "recall": 0.9785,
+        "f1": 0.9807,
+        "support": 2000
+      },
+      "zho_Hant": {
+        "precision": 0.9765,
+        "recall": 0.9785,
+        "f1": 0.9775,
+        "support": 2000
+      },
+      "jpn_Jpan": {
+        "precision": 0.992,
+        "recall": 0.99,
+        "f1": 0.991,
+        "support": 2000
+      },
+      "kor_Hang": {
+        "precision": 0.9945,
+        "recall": 0.996,
+        "f1": 0.9953,
+        "support": 2000
+      },
+      "tam_Taml": {
+        "precision": 0.911,
+        "recall": 0.9675,
+        "f1": 0.9384,
+        "support": 2000
+      },
+      "hin_Deva": {
+        "precision": 0.9173,
+        "recall": 0.9765,
+        "f1": 0.946,
+        "support": 2000
+      },
+      "hin_Latn": {
+        "precision": 0.7646,
+        "recall": 0.617,
+        "f1": 0.6829,
+        "support": 2000
+      },
+      "urd_Latn": {
+        "precision": 0.6847,
+        "recall": 0.812,
+        "f1": 0.7429,
+        "support": 2000
+      },
+      "other": {
+        "precision": 0.9125,
+        "recall": 0.793,
+        "f1": 0.8486,
+        "support": 2000
+      }
+    },
+    "confusions": {
+      "malay_indonesian": {
+        "ind_Latn": {
+          "ind_Latn": 1810,
+          "zsm_Latn": 139,
+          "(outside group)": 51
+        },
+        "zsm_Latn": {
+          "ind_Latn": 126,
+          "zsm_Latn": 1825,
+          "(outside group)": 49
+        }
+      },
+      "han": {
+        "zho_Hans": {
+          "zho_Hans": 1957,
+          "zho_Hant": 35,
+          "(outside group)": 8
+        },
+        "zho_Hant": {
+          "zho_Hans": 29,
+          "zho_Hant": 1957,
+          "(outside group)": 14
+        }
+      },
+      "romanized_hindi": {
+        "eng_Latn": {
+          "eng_Latn": 1945,
+          "hin_Latn": 13,
+          "urd_Latn": 0,
+          "(outside group)": 42
+        },
+        "hin_Latn": {
+          "eng_Latn": 10,
+          "hin_Latn": 1234,
+          "urd_Latn": 726,
+          "(outside group)": 30
+        },
+        "urd_Latn": {
+          "eng_Latn": 2,
+          "hin_Latn": 348,
+          "urd_Latn": 1624,
+          "(outside group)": 26
+        }
+      }
+    }
+  },
+  "model_file": "model.pt",
+  "model_bytes": 815433
+}

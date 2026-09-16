@@ -1,0 +1,3 @@
+{"id": "fixture-en", "text": "Fixture text about silicone moulding. It exists only for tests.", "language": "eng_Latn", "source": "fixture", "title": "Silicone fixture", "url": "https://example.invalid/en", "licence": "test-only"}
+{"id": "fixture-id", "text": "Teks uji tentang pencetakan silikon. Hanya untuk pengujian.", "language": "ind_Latn", "source": "fixture", "title": "Silikon fixture", "url": "https://example.invalid/id", "licence": "test-only"}
+{"id": "fixture-zh", "text": "关于硅胶成型的测试文本。仅用于测试。", "language": "zho_Hans", "source": "fixture", "title": "硅胶 fixture", "url": "https://example.invalid/zh", "licence": "test-only"}

@@ -1,0 +1,221 @@
+{
+  "selection_metric": "validation macro-F1 over confusion-group labels (val_select)",
+  "overall": "e5-finetune-20260915-114601",
+  "overall_family": "e5_finetune",
+  "per_family": {
+    "fasttext": "fasttext-05-20260915-110433",
+    "e5_head": "e5-head-04-20260915-113244",
+    "e5_finetune": "e5-finetune-20260915-114601"
+  },
+  "ranking": [
+    {
+      "run_id": "e5-finetune-20260915-114601",
+      "family": "e5_finetune",
+      "val_group_macro_f1": 0.9132,
+      "val_macro_f1": 0.946,
+      "val_group_f1": {
+        "malay_indonesian": 0.9479,
+        "han": 0.9849,
+        "romanized_hindi": 0.8423
+      },
+      "model_bytes": 470703567,
+      "wall_clock_seconds": 2167.7
+    },
+    {
+      "run_id": "e5-head-04-20260915-113244",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8811,
+      "val_macro_f1": 0.9072,
+      "val_group_f1": {
+        "malay_indonesian": 0.9055,
+        "han": 0.9791,
+        "romanized_hindi": 0.7994
+      },
+      "model_bytes": 815433,
+      "wall_clock_seconds": 54.6
+    },
+    {
+      "run_id": "fasttext-05-20260915-110433",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.8765,
+      "val_macro_f1": 0.9159,
+      "val_group_f1": {
+        "malay_indonesian": 0.9439,
+        "han": 0.9778,
+        "romanized_hindi": 0.7641
+      },
+      "model_bytes": 356107431,
+      "wall_clock_seconds": 129.5
+    },
+    {
+      "run_id": "e5-head-06-20260915-113359",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8734,
+      "val_macro_f1": 0.8974,
+      "val_group_f1": {
+        "malay_indonesian": 0.8969,
+        "han": 0.9767,
+        "romanized_hindi": 0.7889
+      },
+      "model_bytes": 815433,
+      "wall_clock_seconds": 63.9
+    },
+    {
+      "run_id": "e5-head-07-20260915-113503",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8721,
+      "val_macro_f1": 0.8958,
+      "val_group_f1": {
+        "malay_indonesian": 0.8945,
+        "han": 0.976,
+        "romanized_hindi": 0.788
+      },
+      "model_bytes": 815433,
+      "wall_clock_seconds": 63.4
+    },
+    {
+      "run_id": "e5-head-02-20260915-113044",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8674,
+      "val_macro_f1": 0.8936,
+      "val_group_f1": {
+        "malay_indonesian": 0.894,
+        "han": 0.977,
+        "romanized_hindi": 0.7767
+      },
+      "model_bytes": 205641,
+      "wall_clock_seconds": 63.7
+    },
+    {
+      "run_id": "e5-head-00-20260915-112944",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8666,
+      "val_macro_f1": 0.8938,
+      "val_group_f1": {
+        "malay_indonesian": 0.895,
+        "han": 0.9775,
+        "romanized_hindi": 0.7739
+      },
+      "model_bytes": 205641,
+      "wall_clock_seconds": 29.5
+    },
+    {
+      "run_id": "e5-head-01-20260915-113016",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8651,
+      "val_macro_f1": 0.8917,
+      "val_group_f1": {
+        "malay_indonesian": 0.8927,
+        "han": 0.977,
+        "romanized_hindi": 0.7721
+      },
+      "model_bytes": 205641,
+      "wall_clock_seconds": 28.5
+    },
+    {
+      "run_id": "e5-head-03-20260915-113148",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8646,
+      "val_macro_f1": 0.8904,
+      "val_group_f1": {
+        "malay_indonesian": 0.8904,
+        "han": 0.9765,
+        "romanized_hindi": 0.7728
+      },
+      "model_bytes": 205641,
+      "wall_clock_seconds": 55.3
+    },
+    {
+      "run_id": "e5-head-05-20260915-113339",
+      "family": "e5_head",
+      "val_group_macro_f1": 0.8634,
+      "val_macro_f1": 0.8885,
+      "val_group_f1": {
+        "malay_indonesian": 0.8896,
+        "han": 0.976,
+        "romanized_hindi": 0.7708
+      },
+      "model_bytes": 815433,
+      "wall_clock_seconds": 20.0
+    },
+    {
+      "run_id": "fasttext-04-20260915-105919",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.8495,
+      "val_macro_f1": 0.9008,
+      "val_group_f1": {
+        "malay_indonesian": 0.9507,
+        "han": 0.9664,
+        "romanized_hindi": 0.7042
+      },
+      "model_bytes": 1165299687,
+      "wall_clock_seconds": 313.6
+    },
+    {
+      "run_id": "fasttext-02-20260915-105448",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.8242,
+      "val_macro_f1": 0.8865,
+      "val_group_f1": {
+        "malay_indonesian": 0.9512,
+        "han": 0.9669,
+        "romanized_hindi": 0.6445
+      },
+      "model_bytes": 1165299687,
+      "wall_clock_seconds": 138.1
+    },
+    {
+      "run_id": "fasttext-00-20260915-105249",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.8158,
+      "val_macro_f1": 0.8822,
+      "val_group_f1": {
+        "malay_indonesian": 0.9366,
+        "han": 0.978,
+        "romanized_hindi": 0.6271
+      },
+      "model_bytes": 356107431,
+      "wall_clock_seconds": 53.3
+    },
+    {
+      "run_id": "fasttext-01-20260915-105343",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.8033,
+      "val_macro_f1": 0.8744,
+      "val_group_f1": {
+        "malay_indonesian": 0.9508,
+        "han": 0.9666,
+        "romanized_hindi": 0.596
+      },
+      "model_bytes": 356107431,
+      "wall_clock_seconds": 64.9
+    },
+    {
+      "run_id": "fasttext-natural-20260915-110656",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.788,
+      "val_macro_f1": 0.8637,
+      "val_group_f1": {
+        "malay_indonesian": 0.9398,
+        "han": 0.968,
+        "romanized_hindi": 0.5668
+      },
+      "model_bytes": 347044401,
+      "wall_clock_seconds": 120.5
+    },
+    {
+      "run_id": "fasttext-03-20260915-105707",
+      "family": "fasttext",
+      "val_group_macro_f1": 0.7843,
+      "val_macro_f1": 0.8652,
+      "val_group_f1": {
+        "malay_indonesian": 0.9438,
+        "han": 0.9772,
+        "romanized_hindi": 0.5494
+      },
+      "model_bytes": 1165299687,
+      "wall_clock_seconds": 131.0
+    }
+  ],
+  "selected_at": "2026-09-15T12:30:50+00:00"
+}

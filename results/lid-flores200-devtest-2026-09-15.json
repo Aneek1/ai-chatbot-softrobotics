@@ -1,0 +1,1904 @@
+{
+  "date": "2026-09-15T16:27:57+00:00",
+  "environment": {
+    "python": "3.12.14",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "machine": "AMD64",
+    "cpu_count": 20,
+    "gpu": {
+      "name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "driver": "592.15",
+      "memory_mib": 8151,
+      "compute_capability": "12.0"
+    },
+    "torch": {
+      "version": "2.14.0+cu130",
+      "cuda": "13.0",
+      "cuda_available": true,
+      "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "capability": "12.0",
+      "bf16_supported": true
+    },
+    "commit": "90486ad7a034e01de48ba95e2db5bab4fa15f669",
+    "packages": {
+      "torch": "2.14.0+cu130",
+      "transformers": "5.17.0",
+      "onnx": "1.22.0",
+      "onnxruntime": "1.30.0",
+      "numpy": "2.5.3",
+      "pyarrow": "25.0.1",
+      "fasttext-wheel": null,
+      "fasttext-predict": "0.9.2.4",
+      "opencc": "1.4.2"
+    }
+  },
+  "benchmark": {
+    "name": "FLORES-200",
+    "url": "https://dl.fbaipublicfiles.com/nllb/flores200_dataset.tar.gz",
+    "sha256": "b8b0b76783024b85797e5cc75064eb83fc5288b41e9654dabc7be6ae944011f6",
+    "bytes": 25585843,
+    "last_modified": "2022-07-14",
+    "licence": "CC-BY-SA-4.0",
+    "licence_source": "https://github.com/facebookresearch/flores/blob/main/flores200/README.md",
+    "split": "devtest",
+    "files": 204,
+    "sentences": 206448
+  },
+  "model_manifest": {
+    "downloaded_at": "2026-09-15T11:13:34+00:00",
+    "models": [
+      {
+        "repo": "intfloat/multilingual-e5-small",
+        "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+        "files": {
+          "onnx/model.onnx": {
+            "bytes": 470268510,
+            "sha256": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665"
+          },
+          "tokenizer.json": {
+            "bytes": 17082730,
+            "sha256": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39"
+          },
+          "tokenizer_config.json": {
+            "bytes": 443,
+            "sha256": "a1d6bc8734a6f635dc158508bef000f8e2e5a759c7d92f984b2c86e5ff53425b"
+          },
+          "special_tokens_map.json": {
+            "bytes": 167,
+            "sha256": "d05497f1da52c5e09554c0cd874037a083e1dc1b9cfd48034d1c717f1afc07a7"
+          },
+          "config.json": {
+            "bytes": 655,
+            "sha256": "69137736cab8b8903a07fe8afaafdda25aac55415a12a55d1bffa9f581abf959"
+          },
+          "model.safetensors": {
+            "bytes": 470641600,
+            "sha256": "1a55775f53449dac10a2bcbc312469fac40b96d53198c407081a831f81c98477"
+          }
+        }
+      },
+      {
+        "repo": "cis-lmu/glotlid",
+        "revision": "85cd6716494360367b75f642b5bc78667605d0b4",
+        "files": {
+          "model.bin": {
+            "bytes": 1687094687,
+            "sha256": "a818b6bd42a628ab47d3dfc1578c7ea615c45381f3494c42535e31e8c4cafc9e"
+          }
+        }
+      }
+    ]
+  },
+  "published": [
+    {
+      "model": "GlotLID-M",
+      "source": "Kargaran et al. 2023 (arXiv:2310.16248), Table 2, FLORES-200 all",
+      "split": "devtest",
+      "threshold": 0.0,
+      "languages": 196,
+      "macro_f1": 0.917,
+      "macro_fpr": 0.0042
+    },
+    {
+      "model": "GlotLID-M",
+      "source": "Kargaran et al. 2023 (arXiv:2310.16248), Table 3, FLORES-200, top half (\"SET?\": language set not known to the model), averaged over the 195 languages shared with OpenLID",
+      "split": "devtest",
+      "threshold": 0.0,
+      "languages": 195,
+      "macro_f1": 0.916,
+      "macro_fpr": 0.0043
+    },
+    {
+      "model": "OpenLID",
+      "source": "Kargaran et al. 2023 (arXiv:2310.16248), Table 3, FLORES-200, top half (\"SET?\": language set not known to the model), averaged over the 195 languages shared with GlotLID-M",
+      "split": "devtest",
+      "threshold": 0.0,
+      "languages": 195,
+      "macro_f1": 0.923,
+      "macro_fpr": 0.0051
+    },
+    {
+      "model": "OpenLID",
+      "source": "Burchell et al. 2023 (arXiv:2305.13820), Table 1, FLORES-200*",
+      "split": "devtest",
+      "threshold": null,
+      "languages": 201,
+      "macro_f1": 0.927,
+      "macro_fpr": 0.033,
+      "note": "FPR as printed; the table does not say whether it is a fraction or a percentage"
+    }
+  ],
+  "notes": [
+    "GlotLID label space: zho_Hans and zho_Hant are both scored as cmn_Hani and yue_Hant as yue_Hani; FLORES codes that GlotLID lacks are excluded and listed per model.",
+    "Specialist label space: the nine supported FLORES languages keep their codes and every other FLORES language counts as 'other'. GlotLID and lid.176 answers are mapped the same way, with the OpenCC rule for Han text.",
+    "FLORES-200 has no romanized Hindi or Urdu; those labels are scored on the Dakshina test files in the langid-eval results.",
+    "Published figures come from the papers' own model versions and label mappings; they are context, not a reproduction."
+  ],
+  "native_space": {
+    "glotlid-full": {
+      "languages": 195,
+      "sentences": 198352,
+      "threshold": 0.0,
+      "excluded_flores_codes": [
+        "acq_Arab",
+        "aka_Latn",
+        "est_Latn",
+        "grn_Latn",
+        "kon_Latn",
+        "pes_Arab",
+        "prs_Arab",
+        "tgl_Latn"
+      ],
+      "merged_codes": {
+        "zho_Hans": "cmn_Hani",
+        "zho_Hant": "cmn_Hani",
+        "yue_Hant": "yue_Hani"
+      },
+      "macro_f1": 0.9554,
+      "macro_fpr": 0.00019,
+      "per_label_f1": {
+        "ace_Arab": 0.9906,
+        "ace_Latn": 0.998,
+        "acm_Arab": 0.5153,
+        "aeb_Arab": 0.6494,
+        "afr_Latn": 1.0,
+        "ajp_Arab": 0.338,
+        "als_Latn": 0.999,
+        "amh_Ethi": 0.9995,
+        "apc_Arab": 0.4637,
+        "arb_Arab": 0.404,
+        "arb_Latn": 0.999,
+        "ars_Arab": 0.0906,
+        "ary_Arab": 0.7281,
+        "arz_Arab": 0.6156,
+        "asm_Beng": 1.0,
+        "ast_Latn": 0.9941,
+        "awa_Deva": 0.9379,
+        "ayr_Latn": 0.9995,
+        "azb_Arab": 0.989,
+        "azj_Latn": 0.999,
+        "bak_Cyrl": 0.9995,
+        "bam_Latn": 0.7704,
+        "ban_Latn": 0.9788,
+        "bel_Cyrl": 1.0,
+        "bem_Latn": 0.994,
+        "ben_Beng": 0.9995,
+        "bho_Deva": 0.9744,
+        "bjn_Arab": 0.9872,
+        "bjn_Latn": 0.988,
+        "bod_Tibt": 0.9783,
+        "bos_Latn": 0.608,
+        "bug_Latn": 0.9965,
+        "bul_Cyrl": 1.0,
+        "cat_Latn": 0.9995,
+        "ceb_Latn": 0.995,
+        "ces_Latn": 1.0,
+        "cjk_Latn": 0.9789,
+        "ckb_Arab": 0.996,
+        "cmn_Hani": 0.7937,
+        "crh_Latn": 0.991,
+        "cym_Latn": 1.0,
+        "dan_Latn": 0.996,
+        "deu_Latn": 1.0,
+        "dik_Latn": 0.9945,
+        "dyu_Latn": 0.7215,
+        "dzo_Tibt": 0.9792,
+        "ell_Grek": 1.0,
+        "eng_Latn": 0.9926,
+        "epo_Latn": 1.0,
+        "eus_Latn": 0.9995,
+        "ewe_Latn": 1.0,
+        "fao_Latn": 0.9995,
+        "fij_Latn": 0.9995,
+        "fin_Latn": 1.0,
+        "fon_Latn": 1.0,
+        "fra_Latn": 1.0,
+        "fur_Latn": 1.0,
+        "fuv_Latn": 0.993,
+        "gaz_Latn": 1.0,
+        "gla_Latn": 0.9995,
+        "gle_Latn": 1.0,
+        "glg_Latn": 0.996,
+        "guj_Gujr": 1.0,
+        "hat_Latn": 1.0,
+        "hau_Latn": 0.9985,
+        "heb_Hebr": 1.0,
+        "hin_Deva": 0.9206,
+        "hne_Deva": 0.9663,
+        "hrv_Latn": 0.765,
+        "hun_Latn": 0.9995,
+        "hye_Armn": 0.999,
+        "ibo_Latn": 1.0,
+        "ilo_Latn": 0.9995,
+        "ind_Latn": 0.9164,
+        "isl_Latn": 0.9995,
+        "ita_Latn": 0.9985,
+        "jav_Latn": 0.9936,
+        "jpn_Jpan": 0.997,
+        "kab_Latn": 0.9931,
+        "kac_Latn": 1.0,
+        "kam_Latn": 0.9783,
+        "kan_Knda": 1.0,
+        "kas_Arab": 0.998,
+        "kas_Deva": 0.998,
+        "kat_Geor": 1.0,
+        "kaz_Cyrl": 0.9995,
+        "kbp_Latn": 0.9995,
+        "kea_Latn": 0.9715,
+        "khk_Cyrl": 1.0,
+        "khm_Khmr": 0.9995,
+        "kik_Latn": 0.9656,
+        "kin_Latn": 0.9625,
+        "kir_Cyrl": 1.0,
+        "kmb_Latn": 0.9911,
+        "kmr_Latn": 0.993,
+        "knc_Arab": 0.9783,
+        "knc_Latn": 1.0,
+        "kor_Hang": 1.0,
+        "lao_Laoo": 0.9995,
+        "lij_Latn": 0.9995,
+        "lim_Latn": 0.9935,
+        "lin_Latn": 0.9995,
+        "lit_Latn": 0.9995,
+        "lmo_Latn": 0.9955,
+        "ltg_Latn": 0.9965,
+        "ltz_Latn": 1.0,
+        "lua_Latn": 0.9965,
+        "lug_Latn": 0.996,
+        "luo_Latn": 0.9995,
+        "lus_Latn": 0.998,
+        "lvs_Latn": 0.9975,
+        "mag_Deva": 0.984,
+        "mai_Deva": 0.997,
+        "mal_Mlym": 1.0,
+        "mar_Deva": 1.0,
+        "min_Arab": 0.9895,
+        "min_Latn": 0.9936,
+        "mkd_Cyrl": 0.999,
+        "mlt_Latn": 0.998,
+        "mni_Beng": 0.9995,
+        "mos_Latn": 0.9915,
+        "mri_Latn": 0.999,
+        "mya_Mymr": 1.0,
+        "nld_Latn": 0.9985,
+        "nno_Latn": 0.9855,
+        "nob_Latn": 0.9819,
+        "npi_Deva": 1.0,
+        "nso_Latn": 0.9956,
+        "nus_Latn": 0.9995,
+        "nya_Latn": 0.9985,
+        "oci_Latn": 1.0,
+        "ory_Orya": 1.0,
+        "pag_Latn": 0.9995,
+        "pan_Guru": 1.0,
+        "pap_Latn": 0.9931,
+        "pbt_Arab": 0.999,
+        "plt_Latn": 0.999,
+        "pol_Latn": 0.9946,
+        "por_Latn": 0.9966,
+        "quy_Latn": 0.8474,
+        "ron_Latn": 0.999,
+        "run_Latn": 0.9644,
+        "rus_Cyrl": 1.0,
+        "sag_Latn": 0.998,
+        "san_Deva": 0.9945,
+        "sat_Olck": 1.0,
+        "scn_Latn": 0.9965,
+        "shn_Mymr": 1.0,
+        "sin_Sinh": 1.0,
+        "slk_Latn": 0.9985,
+        "slv_Latn": 0.997,
+        "smo_Latn": 0.999,
+        "sna_Latn": 0.9995,
+        "snd_Arab": 0.9995,
+        "som_Latn": 1.0,
+        "sot_Latn": 0.9935,
+        "spa_Latn": 0.9956,
+        "srd_Latn": 0.998,
+        "srp_Cyrl": 0.999,
+        "ssw_Latn": 0.9955,
+        "sun_Latn": 0.996,
+        "swe_Latn": 1.0,
+        "swh_Latn": 0.9636,
+        "szl_Latn": 0.994,
+        "tam_Taml": 1.0,
+        "taq_Latn": 0.9819,
+        "taq_Tfng": 0.9035,
+        "tat_Cyrl": 0.9995,
+        "tel_Telu": 0.9995,
+        "tgk_Cyrl": 1.0,
+        "tha_Thai": 1.0,
+        "tir_Ethi": 0.9819,
+        "tpi_Latn": 0.9995,
+        "tsn_Latn": 0.9926,
+        "tso_Latn": 0.9985,
+        "tuk_Latn": 1.0,
+        "tum_Latn": 0.999,
+        "tur_Latn": 0.9926,
+        "twi_Latn": 0.9995,
+        "tzm_Tfng": 0.1763,
+        "uig_Arab": 1.0,
+        "ukr_Cyrl": 1.0,
+        "umb_Latn": 0.9865,
+        "urd_Arab": 0.9975,
+        "uzn_Latn": 1.0,
+        "vec_Latn": 0.999,
+        "vie_Latn": 1.0,
+        "war_Latn": 1.0,
+        "wol_Latn": 0.9995,
+        "xho_Latn": 0.9897,
+        "ydd_Hebr": 1.0,
+        "yor_Latn": 1.0,
+        "yue_Hani": 0.0156,
+        "zsm_Latn": 0.9307,
+        "zul_Latn": 0.9694
+      }
+    },
+    "glotlid-compressed": {
+      "languages": 195,
+      "sentences": 198352,
+      "threshold": 0.0,
+      "excluded_flores_codes": [
+        "acq_Arab",
+        "aka_Latn",
+        "est_Latn",
+        "grn_Latn",
+        "kon_Latn",
+        "pes_Arab",
+        "prs_Arab",
+        "tgl_Latn"
+      ],
+      "merged_codes": {
+        "zho_Hans": "cmn_Hani",
+        "zho_Hant": "cmn_Hani",
+        "yue_Hant": "yue_Hani"
+      },
+      "macro_f1": 0.9568,
+      "macro_fpr": 0.00019,
+      "per_label_f1": {
+        "ace_Arab": 0.9911,
+        "ace_Latn": 0.998,
+        "acm_Arab": 0.5518,
+        "aeb_Arab": 0.6568,
+        "afr_Latn": 1.0,
+        "ajp_Arab": 0.3673,
+        "als_Latn": 1.0,
+        "amh_Ethi": 0.999,
+        "apc_Arab": 0.4677,
+        "arb_Arab": 0.4128,
+        "arb_Latn": 0.9995,
+        "ars_Arab": 0.1007,
+        "ary_Arab": 0.7209,
+        "arz_Arab": 0.6226,
+        "asm_Beng": 1.0,
+        "ast_Latn": 0.9955,
+        "awa_Deva": 0.9512,
+        "ayr_Latn": 0.9995,
+        "azb_Arab": 0.9895,
+        "azj_Latn": 0.9995,
+        "bak_Cyrl": 1.0,
+        "bam_Latn": 0.7828,
+        "ban_Latn": 0.9799,
+        "bel_Cyrl": 1.0,
+        "bem_Latn": 0.993,
+        "ben_Beng": 0.9995,
+        "bho_Deva": 0.9742,
+        "bjn_Arab": 0.9882,
+        "bjn_Latn": 0.9881,
+        "bod_Tibt": 0.9773,
+        "bos_Latn": 0.6618,
+        "bug_Latn": 0.997,
+        "bul_Cyrl": 1.0,
+        "cat_Latn": 1.0,
+        "ceb_Latn": 0.9935,
+        "ces_Latn": 0.999,
+        "cjk_Latn": 0.9783,
+        "ckb_Arab": 0.9935,
+        "cmn_Hani": 0.7934,
+        "crh_Latn": 0.9915,
+        "cym_Latn": 1.0,
+        "dan_Latn": 0.996,
+        "deu_Latn": 1.0,
+        "dik_Latn": 0.994,
+        "dyu_Latn": 0.7562,
+        "dzo_Tibt": 0.9783,
+        "ell_Grek": 1.0,
+        "eng_Latn": 0.9922,
+        "epo_Latn": 1.0,
+        "eus_Latn": 0.9995,
+        "ewe_Latn": 1.0,
+        "fao_Latn": 0.9995,
+        "fij_Latn": 0.999,
+        "fin_Latn": 1.0,
+        "fon_Latn": 0.999,
+        "fra_Latn": 1.0,
+        "fur_Latn": 1.0,
+        "fuv_Latn": 0.992,
+        "gaz_Latn": 1.0,
+        "gla_Latn": 0.9995,
+        "gle_Latn": 1.0,
+        "glg_Latn": 0.996,
+        "guj_Gujr": 1.0,
+        "hat_Latn": 0.9995,
+        "hau_Latn": 0.9985,
+        "heb_Hebr": 1.0,
+        "hin_Deva": 0.933,
+        "hne_Deva": 0.9709,
+        "hrv_Latn": 0.7723,
+        "hun_Latn": 0.9995,
+        "hye_Armn": 0.9995,
+        "ibo_Latn": 1.0,
+        "ilo_Latn": 1.0,
+        "ind_Latn": 0.931,
+        "isl_Latn": 0.9995,
+        "ita_Latn": 0.9985,
+        "jav_Latn": 0.9946,
+        "jpn_Jpan": 0.9966,
+        "kab_Latn": 0.9961,
+        "kac_Latn": 1.0,
+        "kam_Latn": 0.9752,
+        "kan_Knda": 1.0,
+        "kas_Arab": 0.9985,
+        "kas_Deva": 0.9995,
+        "kat_Geor": 1.0,
+        "kaz_Cyrl": 0.9995,
+        "kbp_Latn": 0.9995,
+        "kea_Latn": 0.9716,
+        "khk_Cyrl": 0.9995,
+        "khm_Khmr": 0.9995,
+        "kik_Latn": 0.9656,
+        "kin_Latn": 0.957,
+        "kir_Cyrl": 1.0,
+        "kmb_Latn": 0.9901,
+        "kmr_Latn": 0.9905,
+        "knc_Arab": 0.986,
+        "knc_Latn": 1.0,
+        "kor_Hang": 1.0,
+        "lao_Laoo": 0.9995,
+        "lij_Latn": 0.9985,
+        "lim_Latn": 0.994,
+        "lin_Latn": 0.9995,
+        "lit_Latn": 0.9995,
+        "lmo_Latn": 0.9955,
+        "ltg_Latn": 0.999,
+        "ltz_Latn": 1.0,
+        "lua_Latn": 0.996,
+        "lug_Latn": 0.993,
+        "luo_Latn": 0.9995,
+        "lus_Latn": 0.9965,
+        "lvs_Latn": 0.9995,
+        "mag_Deva": 0.9832,
+        "mai_Deva": 0.9961,
+        "mal_Mlym": 1.0,
+        "mar_Deva": 1.0,
+        "min_Arab": 0.9916,
+        "min_Latn": 0.9946,
+        "mkd_Cyrl": 0.999,
+        "mlt_Latn": 0.9985,
+        "mni_Beng": 0.9995,
+        "mos_Latn": 0.9875,
+        "mri_Latn": 0.9995,
+        "mya_Mymr": 1.0,
+        "nld_Latn": 0.999,
+        "nno_Latn": 0.9866,
+        "nob_Latn": 0.9828,
+        "npi_Deva": 1.0,
+        "nso_Latn": 0.9965,
+        "nus_Latn": 0.9995,
+        "nya_Latn": 0.998,
+        "oci_Latn": 0.9995,
+        "ory_Orya": 1.0,
+        "pag_Latn": 0.999,
+        "pan_Guru": 1.0,
+        "pap_Latn": 0.9941,
+        "pbt_Arab": 0.999,
+        "plt_Latn": 0.9985,
+        "pol_Latn": 0.9966,
+        "por_Latn": 0.9956,
+        "quy_Latn": 0.8454,
+        "ron_Latn": 0.9995,
+        "run_Latn": 0.959,
+        "rus_Cyrl": 1.0,
+        "sag_Latn": 0.998,
+        "san_Deva": 0.996,
+        "sat_Olck": 1.0,
+        "scn_Latn": 0.997,
+        "shn_Mymr": 1.0,
+        "sin_Sinh": 1.0,
+        "slk_Latn": 0.998,
+        "slv_Latn": 0.998,
+        "smo_Latn": 0.998,
+        "sna_Latn": 1.0,
+        "snd_Arab": 1.0,
+        "som_Latn": 1.0,
+        "sot_Latn": 0.994,
+        "spa_Latn": 0.997,
+        "srd_Latn": 0.9985,
+        "srp_Cyrl": 0.999,
+        "ssw_Latn": 0.9945,
+        "sun_Latn": 0.9956,
+        "swe_Latn": 1.0,
+        "swh_Latn": 0.9666,
+        "szl_Latn": 0.996,
+        "tam_Taml": 1.0,
+        "taq_Latn": 0.985,
+        "taq_Tfng": 0.8929,
+        "tat_Cyrl": 1.0,
+        "tel_Telu": 0.9995,
+        "tgk_Cyrl": 1.0,
+        "tha_Thai": 1.0,
+        "tir_Ethi": 0.986,
+        "tpi_Latn": 0.9995,
+        "tsn_Latn": 0.9931,
+        "tso_Latn": 0.9985,
+        "tuk_Latn": 0.9995,
+        "tum_Latn": 0.9985,
+        "tur_Latn": 0.9931,
+        "twi_Latn": 0.9995,
+        "tzm_Tfng": 0.2037,
+        "uig_Arab": 1.0,
+        "ukr_Cyrl": 1.0,
+        "umb_Latn": 0.9855,
+        "urd_Arab": 0.998,
+        "uzn_Latn": 1.0,
+        "vec_Latn": 0.998,
+        "vie_Latn": 1.0,
+        "war_Latn": 1.0,
+        "wol_Latn": 0.9985,
+        "xho_Latn": 0.9901,
+        "ydd_Hebr": 1.0,
+        "yor_Latn": 1.0,
+        "yue_Hani": 0.0156,
+        "zsm_Latn": 0.9456,
+        "zul_Latn": 0.9622
+      }
+    }
+  },
+  "specialist_space": {
+    "glotlid-full": {
+      "count": 206448,
+      "accuracy": 0.9927,
+      "macro_f1": 0.9385,
+      "group_macro_f1": 0.8941,
+      "group_f1": {
+        "malay_indonesian": 0.9236,
+        "han": 0.8156,
+        "romanized_hindi": 0.9922
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9844,
+          "recall": 1.0,
+          "f1": 0.9922,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.8479,
+          "recall": 0.997,
+          "f1": 0.9164,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.9933,
+          "recall": 0.8755,
+          "f1": 0.9307,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 1.0,
+          "recall": 0.9792,
+          "f1": 0.9895,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.5025,
+          "recall": 0.8874,
+          "f1": 0.6417,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.9941,
+          "recall": 1.0,
+          "f1": 0.997,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.8551,
+          "recall": 0.997,
+          "f1": 0.9206,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9998,
+          "recall": 0.9937,
+          "f1": 0.9968,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 1009,
+            "zsm_Latn": 3,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 126,
+            "zsm_Latn": 886,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 991,
+            "zho_Hant": 0,
+            "(outside group)": 21
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 898,
+            "(outside group)": 114
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1012,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 8e-05,
+        "ind_Latn": 0.00088,
+        "zsm_Latn": 3e-05,
+        "zho_Hans": 0.0,
+        "zho_Hant": 0.00433,
+        "jpn_Jpan": 3e-05,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00083,
+        "other": 0.00329
+      },
+      "seconds": 134.2,
+      "sentences_per_second": 1538.1
+    },
+    "glotlid-compressed": {
+      "count": 206448,
+      "accuracy": 0.993,
+      "macro_f1": 0.9425,
+      "group_macro_f1": 0.8997,
+      "group_f1": {
+        "malay_indonesian": 0.9383,
+        "han": 0.815,
+        "romanized_hindi": 0.9917
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9835,
+          "recall": 1.0,
+          "f1": 0.9917,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.881,
+          "recall": 0.9872,
+          "f1": 0.931,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.984,
+          "recall": 0.9101,
+          "f1": 0.9456,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 1.0,
+          "recall": 0.9763,
+          "f1": 0.988,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.5034,
+          "recall": 0.8864,
+          "f1": 0.6421,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.9931,
+          "recall": 1.0,
+          "f1": 0.9966,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.8933,
+          "recall": 0.9763,
+          "f1": 0.933,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9997,
+          "recall": 0.994,
+          "f1": 0.9969,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 999,
+            "zsm_Latn": 13,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 91,
+            "zsm_Latn": 921,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 988,
+            "zho_Hant": 0,
+            "(outside group)": 24
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 897,
+            "(outside group)": 115
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1012,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 8e-05,
+        "ind_Latn": 0.00066,
+        "zsm_Latn": 7e-05,
+        "zho_Hans": 0.0,
+        "zho_Hant": 0.00431,
+        "jpn_Jpan": 3e-05,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00057,
+        "other": 0.00604
+      },
+      "seconds": 164.3,
+      "sentences_per_second": 1256.7
+    },
+    "lid.176": {
+      "count": 206448,
+      "accuracy": 0.857,
+      "macro_f1": 0.6321,
+      "group_macro_f1": 0.451,
+      "group_f1": {
+        "malay_indonesian": 0.2614,
+        "han": 0.806,
+        "romanized_hindi": 0.1205
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.0641,
+          "recall": 1.0,
+          "f1": 0.1205,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.1479,
+          "recall": 0.9644,
+          "f1": 0.2565,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.2177,
+          "recall": 0.3429,
+          "f1": 0.2663,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 1.0,
+          "recall": 0.9536,
+          "f1": 0.9762,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.5023,
+          "recall": 0.8656,
+          "f1": 0.6357,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.865,
+          "recall": 1.0,
+          "f1": 0.9276,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 0.9797,
+          "recall": 1.0,
+          "f1": 0.9897,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 0.9721,
+          "recall": 1.0,
+          "f1": 0.9859,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.1368,
+          "recall": 0.999,
+          "f1": 0.2407,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9999,
+          "recall": 0.8549,
+          "f1": 0.9217,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 976,
+            "zsm_Latn": 29,
+            "(outside group)": 7
+          },
+          "zsm_Latn": {
+            "ind_Latn": 663,
+            "zsm_Latn": 347,
+            "(outside group)": 2
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 965,
+            "zho_Hant": 0,
+            "(outside group)": 47
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 876,
+            "(outside group)": 136
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1012,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 0.07192,
+        "ind_Latn": 0.02737,
+        "zsm_Latn": 0.00607,
+        "zho_Hans": 0.0,
+        "zho_Hant": 0.00423,
+        "jpn_Jpan": 0.00077,
+        "kor_Hang": 0.0001,
+        "tam_Taml": 0.00014,
+        "hin_Deva": 0.03104,
+        "other": 0.00198
+      },
+      "seconds": 10.8,
+      "sentences_per_second": 19045.2
+    },
+    "specialist-fasttext": {
+      "count": 206448,
+      "accuracy": 0.9835,
+      "macro_f1": 0.8817,
+      "group_macro_f1": 0.8638,
+      "group_f1": {
+        "malay_indonesian": 0.8573,
+        "han": 0.8276,
+        "romanized_hindi": 0.9493
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9043,
+          "recall": 0.999,
+          "f1": 0.9493,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.743,
+          "recall": 0.92,
+          "f1": 0.8221,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.8434,
+          "recall": 0.9476,
+          "f1": 0.8925,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 0.9892,
+          "recall": 0.9931,
+          "f1": 0.9911,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.499,
+          "recall": 0.9921,
+          "f1": 0.664,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.998,
+          "recall": 1.0,
+          "f1": 0.999,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 0.999,
+          "recall": 1.0,
+          "f1": 0.9995,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.3585,
+          "recall": 0.8725,
+          "f1": 0.5082,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9993,
+          "recall": 0.9841,
+          "f1": 0.9917,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 931,
+            "zsm_Latn": 81,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 53,
+            "zsm_Latn": 959,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 1005,
+            "zho_Hant": 4,
+            "(outside group)": 3
+          },
+          "zho_Hant": {
+            "zho_Hans": 7,
+            "zho_Hant": 1004,
+            "(outside group)": 1
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1011,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 1
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 0.00052,
+        "ind_Latn": 0.00157,
+        "zsm_Latn": 0.00087,
+        "zho_Hans": 5e-05,
+        "zho_Hant": 0.00491,
+        "jpn_Jpan": 1e-05,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00769,
+        "other": 0.01427
+      },
+      "seconds": 14.2,
+      "sentences_per_second": 14576.6
+    },
+    "two-stage+specialist-fasttext": {
+      "count": 206448,
+      "accuracy": 0.9933,
+      "macro_f1": 0.9409,
+      "group_macro_f1": 0.8965,
+      "group_f1": {
+        "malay_indonesian": 0.9233,
+        "han": 0.8217,
+        "romanized_hindi": 0.9926
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9854,
+          "recall": 1.0,
+          "f1": 0.9926,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.911,
+          "recall": 0.92,
+          "f1": 0.9154,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.9151,
+          "recall": 0.9476,
+          "f1": 0.9311,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 0.989,
+          "recall": 0.9733,
+          "f1": 0.9811,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.4983,
+          "recall": 0.9872,
+          "f1": 0.6622,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.9931,
+          "recall": 1.0,
+          "f1": 0.9966,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.8933,
+          "recall": 0.9763,
+          "f1": 0.933,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9998,
+          "recall": 0.994,
+          "f1": 0.9969,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 931,
+            "zsm_Latn": 81,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 53,
+            "zsm_Latn": 959,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 985,
+            "zho_Hant": 4,
+            "(outside group)": 23
+          },
+          "zho_Hant": {
+            "zho_Hans": 7,
+            "zho_Hant": 999,
+            "(outside group)": 6
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1012,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 7e-05,
+        "ind_Latn": 0.00044,
+        "zsm_Latn": 0.00043,
+        "zho_Hans": 5e-05,
+        "zho_Hant": 0.0049,
+        "jpn_Jpan": 3e-05,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00057,
+        "other": 0.00516
+      },
+      "seconds": 184.5,
+      "sentences_per_second": 1118.9
+    },
+    "specialist-e5-head": {
+      "count": 206448,
+      "accuracy": 0.8614,
+      "macro_f1": 0.6528,
+      "group_macro_f1": 0.6559,
+      "group_f1": {
+        "malay_indonesian": 0.4099,
+        "han": 0.8096,
+        "romanized_hindi": 0.8405
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.7291,
+          "recall": 0.9921,
+          "f1": 0.8405,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.5233,
+          "recall": 0.8972,
+          "f1": 0.6611,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.0869,
+          "recall": 0.9042,
+          "f1": 0.1586,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 0.9804,
+          "recall": 0.9881,
+          "f1": 0.9843,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.4733,
+          "recall": 0.9644,
+          "f1": 0.635,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.8861,
+          "recall": 0.999,
+          "f1": 0.9392,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 0.9432,
+          "recall": 1.0,
+          "f1": 0.9707,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 0.0734,
+          "recall": 0.8933,
+          "f1": 0.1356,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.1669,
+          "recall": 0.8617,
+          "f1": 0.2797,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9995,
+          "recall": 0.8576,
+          "f1": 0.9231,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 908,
+            "zsm_Latn": 102,
+            "(outside group)": 2
+          },
+          "zsm_Latn": {
+            "ind_Latn": 79,
+            "zsm_Latn": 915,
+            "(outside group)": 18
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 1000,
+            "zho_Hant": 9,
+            "(outside group)": 3
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 976,
+            "(outside group)": 36
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1004,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 8
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 0.00182,
+        "ind_Latn": 0.00403,
+        "zsm_Latn": 0.04677,
+        "zho_Hans": 0.0001,
+        "zho_Hant": 0.00529,
+        "jpn_Jpan": 0.00063,
+        "kor_Hang": 0.0003,
+        "tam_Taml": 0.05556,
+        "hin_Deva": 0.02118,
+        "other": 0.00999
+      },
+      "seconds": 9372.9,
+      "sentences_per_second": 22.0
+    },
+    "two-stage+specialist-e5-head": {
+      "count": 206448,
+      "accuracy": 0.9931,
+      "macro_f1": 0.9364,
+      "group_macro_f1": 0.8875,
+      "group_f1": {
+        "malay_indonesian": 0.8998,
+        "han": 0.8229,
+        "romanized_hindi": 0.9922
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9844,
+          "recall": 1.0,
+          "f1": 0.9922,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.8912,
+          "recall": 0.8982,
+          "f1": 0.8947,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.8886,
+          "recall": 0.9219,
+          "f1": 0.9049,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 0.9969,
+          "recall": 0.9674,
+          "f1": 0.9819,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.4983,
+          "recall": 0.9941,
+          "f1": 0.6638,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.9931,
+          "recall": 1.0,
+          "f1": 0.9966,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.8933,
+          "recall": 0.9763,
+          "f1": 0.933,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9998,
+          "recall": 0.994,
+          "f1": 0.9969,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 909,
+            "zsm_Latn": 103,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 79,
+            "zsm_Latn": 933,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 979,
+            "zho_Hant": 10,
+            "(outside group)": 23
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 1006,
+            "(outside group)": 6
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1012,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 8e-05,
+        "ind_Latn": 0.00054,
+        "zsm_Latn": 0.00057,
+        "zho_Hans": 1e-05,
+        "zho_Hant": 0.00493,
+        "jpn_Jpan": 3e-05,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00057,
+        "other": 0.00516
+      },
+      "seconds": 716.4,
+      "sentences_per_second": 288.2
+    },
+    "specialist-e5-finetune": {
+      "count": 206448,
+      "accuracy": 0.9874,
+      "macro_f1": 0.9247,
+      "group_macro_f1": 0.8967,
+      "group_f1": {
+        "malay_indonesian": 0.9112,
+        "han": 0.8333,
+        "romanized_hindi": 0.9946
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9902,
+          "recall": 0.999,
+          "f1": 0.9946,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.8722,
+          "recall": 0.9308,
+          "f1": 0.9006,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.9072,
+          "recall": 0.9368,
+          "f1": 0.9217,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6667,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 0.999,
+          "recall": 1.0,
+          "f1": 0.9995,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.7985,
+          "recall": 0.7441,
+          "f1": 0.7703,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9987,
+          "recall": 0.9888,
+          "f1": 0.9937,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 942,
+            "zsm_Latn": 70,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 64,
+            "zsm_Latn": 948,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 1012,
+            "zho_Hant": 0,
+            "(outside group)": 0
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 1012,
+            "(outside group)": 0
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1011,
+            "hin_Latn": 1,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 5e-05,
+        "ind_Latn": 0.00067,
+        "zsm_Latn": 0.00047,
+        "zho_Hans": 0.0,
+        "zho_Hant": 0.00493,
+        "jpn_Jpan": 0.0,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00092,
+        "other": 0.02844
+      },
+      "seconds": 8011.5,
+      "sentences_per_second": 25.8
+    },
+    "two-stage+specialist-e5-finetune": {
+      "count": 206448,
+      "accuracy": 0.9933,
+      "macro_f1": 0.9421,
+      "group_macro_f1": 0.8989,
+      "group_f1": {
+        "malay_indonesian": 0.9233,
+        "han": 0.8269,
+        "romanized_hindi": 0.9941
+      },
+      "per_label": {
+        "eng_Latn": {
+          "precision": 0.9892,
+          "recall": 0.999,
+          "f1": 0.9941,
+          "support": 1012
+        },
+        "ind_Latn": {
+          "precision": 0.9014,
+          "recall": 0.9308,
+          "f1": 0.9159,
+          "support": 1012
+        },
+        "zsm_Latn": {
+          "precision": 0.9249,
+          "recall": 0.9368,
+          "f1": 0.9308,
+          "support": 1012
+        },
+        "zho_Hans": {
+          "precision": 1.0,
+          "recall": 0.9773,
+          "f1": 0.9885,
+          "support": 1012
+        },
+        "zho_Hant": {
+          "precision": 0.5,
+          "recall": 0.9941,
+          "f1": 0.6653,
+          "support": 1012
+        },
+        "jpn_Jpan": {
+          "precision": 0.9931,
+          "recall": 1.0,
+          "f1": 0.9966,
+          "support": 1012
+        },
+        "kor_Hang": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "tam_Taml": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1012
+        },
+        "hin_Deva": {
+          "precision": 0.8933,
+          "recall": 0.9763,
+          "f1": 0.933,
+          "support": 1012
+        },
+        "hin_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "urd_Latn": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0
+        },
+        "other": {
+          "precision": 0.9998,
+          "recall": 0.994,
+          "f1": 0.9969,
+          "support": 197340
+        }
+      },
+      "confusions": {
+        "malay_indonesian": {
+          "ind_Latn": {
+            "ind_Latn": 942,
+            "zsm_Latn": 70,
+            "(outside group)": 0
+          },
+          "zsm_Latn": {
+            "ind_Latn": 64,
+            "zsm_Latn": 948,
+            "(outside group)": 0
+          }
+        },
+        "han": {
+          "zho_Hans": {
+            "zho_Hans": 989,
+            "zho_Hant": 0,
+            "(outside group)": 23
+          },
+          "zho_Hant": {
+            "zho_Hans": 0,
+            "zho_Hant": 1006,
+            "(outside group)": 6
+          }
+        },
+        "romanized_hindi": {
+          "eng_Latn": {
+            "eng_Latn": 1011,
+            "hin_Latn": 1,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "hin_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          },
+          "urd_Latn": {
+            "eng_Latn": 0,
+            "hin_Latn": 0,
+            "urd_Latn": 0,
+            "(outside group)": 0
+          }
+        }
+      },
+      "false_positive_rate": {
+        "eng_Latn": 5e-05,
+        "ind_Latn": 0.0005,
+        "zsm_Latn": 0.00037,
+        "zho_Hans": 0.0,
+        "zho_Hant": 0.0049,
+        "jpn_Jpan": 3e-05,
+        "kor_Hang": 0.0,
+        "tam_Taml": 0.0,
+        "hin_Deva": 0.00057,
+        "other": 0.00516
+      },
+      "seconds": 628.8,
+      "sentences_per_second": 328.3
+    }
+  },
+  "contamination": {
+    "flores200-dev": {
+      "train": 0,
+      "val": 0,
+      "val_select": 0,
+      "test": 0
+    },
+    "flores200-devtest": {
+      "train": 0,
+      "val": 0,
+      "val_select": 0,
+      "test": 0
+    },
+    "dakshina-test": {
+      "train": 0,
+      "val": 0,
+      "val_select": 0,
+      "test": 0
+    }
+  }
+}
