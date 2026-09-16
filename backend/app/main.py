@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager  # noqa: E402
 
 from fastapi import FastAPI  # noqa: E402
 
-from backend.app.api import chat, egress, health, mode  # noqa: E402
+from backend.app.api import chat, chats, egress, health, mode  # noqa: E402
 from backend.app.config import Settings  # noqa: E402
 from backend.app.services import Services, build_services  # noqa: E402
 
@@ -24,6 +24,7 @@ def create_app(services: Services | None = None) -> FastAPI:
     app = FastAPI(title="Soft-robotics assistant", lifespan=lifespan)
     app.state.services = services
     app.include_router(chat.router)
+    app.include_router(chats.router)
     app.include_router(egress.router)
     app.include_router(health.router)
     app.include_router(mode.router)
