@@ -9,25 +9,36 @@ from fastapi import FastAPI  # noqa: E402
 
 from backend.app.api import chat, chats, egress, health, mode  # noqa: E402
 from backend.app.config import Settings  # noqa: E402
-from backend.app.services import Services, build_services  # noqa: E402
+from backend.app.services import Services, build_privacy, build_services  # noqa: E402
 
 
 def create_app(services: Services | None = None) -> FastAPI:
     @asynccontextmanager
     async def lifespan(app: FastAPI):
         if app.state.services is None:
-            app.state.services = build_services(Settings())
-        yield
-        if app.state.services.index is not None:
-            app.state.services.index.close()
+            settings = Settings()
+            privacy = build_privacy(settings)
+            # Installed before the models and the index load, so nothing at startup reaches the network.
+            privacy.guard.install()
+            try:
+                app.state.services = build_services(settings, privacy)
+            except BaseException:
+                privacy.guard.uninstall()
+                raise
+        elif app.state.services.guard is not None:
+            app.state.services.guard.install()
+        services = app.state.services
+        try:
+            yield
+        finally:
+            if services.guard is not None:
+                services.guard.uninstall()
+            services.close()
 
     app = FastAPI(title="Soft-robotics assistant", lifespan=lifespan)
     app.state.services = services
-    app.include_router(chat.router)
-    app.include_router(chats.router)
-    app.include_router(egress.router)
-    app.include_router(health.router)
-    app.include_router(mode.router)
+    for router in (chat.router, chats.router, egress.router, health.router, mode.router):
+        app.include_router(router)
     return app
 
 

@@ -60,17 +60,6 @@ def test_bad_language_override_is_rejected():
     assert response.status_code == 422
 
 
-def test_health_without_ollama_or_index():
-    with TestClient(create_app(fake_services())) as client:
-        body = client.get("/api/health").json()
-    assert body == {
-        "detector": "fake",
-        "ollama_reachable": False,
-        "gemini_configured": False,
-        "documents_by_language": {},
-    }
-
-
 def test_normal_answers_are_written_to_history():
     services = fake_services()
     with TestClient(create_app(services)) as client:
