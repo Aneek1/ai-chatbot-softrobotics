@@ -71,7 +71,9 @@ def test_render_builds_every_section_from_the_files():
         "| 196 | 0.917 | 0.0042 |" in text
     )
     assert "| glotlid-compressed | 0.930 | 0.860 | 0.700 | 0.900 | 0.990 | 0.990 | 51234 |" in text
-    assert "| glotlid-compressed | 0.931 | n/a | n/a | n/a | 0.412 | n/a | 0.08 | 0.21 | 225.0 |" in text
+    assert (
+        "| glotlid-compressed | 0.931 | n/a | n/a | n/a | n/a | 0.412 | n/a | 0.08 | 0.21 | 225.0 |" in text
+    )
     assert "0 dataset rows match a held-out line" in text
     assert "not a reproduction" in text
 

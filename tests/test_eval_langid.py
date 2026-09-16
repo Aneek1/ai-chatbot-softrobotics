@@ -1,4 +1,6 @@
+import json
 import random
+from pathlib import Path
 
 import pytest
 
@@ -10,10 +12,12 @@ from eval.langid_eval import (
     evaluate,
     flores_items,
     internal_items,
+    knowledge_base_items,
     latency_ms,
     paragraph_items,
     percentile,
     short_items,
+    taiwan_items,
     threshold_sweep,
 )
 from training.data.rows import Row
@@ -129,3 +133,44 @@ def test_latency_times_single_texts():
     result = latency_ms(detector, ["a", "b", "c"])
     assert result["samples"] == 3 and detector.calls == 3
     assert 0 <= result["p50_ms"] <= result["p95_ms"]
+
+
+def test_taiwan_items_pair_each_converted_line_with_its_source():
+    devtest = {"zho_Hans": ["鼠标和内存", "计算机内存", "ABC 123"]}
+    items = taiwan_items(devtest, random.Random(0), count=3)
+    assert [i.slice for i in items] == ["taiwan-vocabulary"] * 4
+    assert [i.gold for i in items] == ["zho_Hans", "zho_Hant", "zho_Hans", "zho_Hant"]
+    assert {i.set for i in items} == {"flores200-devtest"}
+    assert "滑鼠和記憶體" in [i.text for i in items]
+
+
+def test_taiwan_items_are_empty_without_simplified_sentences():
+    assert taiwan_items({"eng_Latn": ["hello"]}, random.Random(0)) == []
+
+
+def test_knowledge_base_items_use_the_document_language_and_source(tmp_path):
+    path = tmp_path / "kb.jsonl"
+    path.write_text(
+        "\n".join(
+            json.dumps(record, ensure_ascii=False)
+            for record in (
+                {"text": "Soft robots bend.", "language": "eng_Latn", "source": "wikipedia"},
+                {"text": "軟體機器人", "language": "zho_Hant", "source": "wikipedia"},
+                {"text": "Une phrase.", "language": "fra_Latn", "source": "wikipedia"},
+                {"text": "Abstract text.", "language": "eng_Latn", "source": "arxiv"},
+            )
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    items = knowledge_base_items(path)
+    assert [(i.gold, i.slice) for i in items] == [
+        ("eng_Latn", "wikipedia"),
+        ("zho_Hant", "wikipedia"),
+        ("eng_Latn", "arxiv"),
+    ]
+    assert {i.set for i in items} == {"knowledge-base"}
+
+
+def test_knowledge_base_items_of_a_missing_file_are_empty():
+    assert knowledge_base_items(Path("does-not-exist.jsonl")) == []

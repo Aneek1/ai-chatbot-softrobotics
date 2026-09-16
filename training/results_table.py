@@ -15,6 +15,7 @@ SLICES = (
     ("flores200-devtest/sentence", "FLORES sentence"),
     ("flores200-devtest/1-3 words", "FLORES 1-3 words"),
     ("flores200-devtest/paragraph", "FLORES paragraph"),
+    ("flores200-devtest/taiwan-vocabulary", "Taiwan vocabulary"),
     ("flores200-devtest/code-mixed", "code-mixed"),
     ("dakshina-test/sentence", "Dakshina sentence"),
     ("dakshina-test/1-3 words", "Dakshina words"),

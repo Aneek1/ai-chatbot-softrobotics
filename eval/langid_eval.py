@@ -2,12 +2,14 @@
 
 Usage (after the models are exported):
     PYTHONUTF8=1 uv run --group train python -m eval.langid_eval
+    PYTHONUTF8=1 uv run --group train python -m eval.langid_eval --detectors glotlid-compressed,lid.176
 
-Sets: FLORES-200 devtest (Meta's original release; FLORES+ on Hugging Face is gated), the Dakshina test
-files for romanized Hindi and Urdu, and a sample of the internal test split. Wikipedia language labels
-from the knowledge base are not included until the knowledge base exists.
+Sets: FLORES-200 devtest (Meta's original release; FLORES+ on Hugging Face is gated), the Dakshina
+test files for romanized Hindi and Urdu, a sample of the internal test split, and the built
+knowledge base, whose labels are the wiki or feed each document came from.
 """
 
+import argparse
 import json
 import math
 import random
@@ -19,6 +21,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from eval.detectors import LID176_SOURCE, Detector, detector_specs
+from eval.taiwan_vocab import CONFIG as TAIWAN_CONFIG
+from eval.taiwan_vocab import taiwan_pairs
 from training.data.augment import code_mixed, crop
 from training.data.build import select_subset
 from training.data.dakshina import DAKSHINA_SOURCE, dakshina_rows
@@ -32,12 +36,16 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 MODELS_DIR = REPO_ROOT / "models"
 RESULTS_DIR = REPO_ROOT / "results"
 DATA_DIR = CACHE_DIR / "lid"
+KNOWLEDGE_BASE = REPO_ROOT / "data" / "knowledge-base.jsonl"
 FLORES_SET, DAKSHINA_SET, INTERNAL_SET = "flores200-devtest", "dakshina-test", "internal-test"
+KB_SET = "knowledge-base"
+TAIWAN_SLICE = "taiwan-vocabulary"
 THRESHOLDS = (0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9)
 SEED = 20260915
 OTHER_PER_LANGUAGE = 100
 INTERNAL_PER_LABEL = 2_000
 CODE_MIXED_COUNT = 1_000
+TAIWAN_COUNT = 1_000
 LATENCY_SAMPLES = 300
 
 
@@ -85,6 +93,41 @@ def paragraph_items(items: Sequence[Item]) -> list[Item]:
 def code_mixed_items(items: Sequence[Item], rng: random.Random, count: int) -> list[Item]:
     rows = [Row(i.text, i.gold, "flores", i.set) for i in items if i.gold != OTHER]
     return [Item(row.text, row.label, FLORES_SET, "code-mixed") for row in code_mixed(rows, rng, count)]
+
+
+def taiwan_items(
+    devtest: dict[str, list[str]], rng: random.Random, count: int = TAIWAN_COUNT
+) -> list[Item]:
+    """Simplified FLORES lines and their Taiwan-vocabulary conversions, as one slice.
+
+    Both members of a pair say the same thing, so the slice measures the Simplified/Traditional
+    decision on its own. The Traditional side is an OpenCC conversion, not text written in Taiwan.
+    """
+    simplified = devtest.get("zho_Hans", [])
+    sample = rng.sample(simplified, min(count, len(simplified)))
+    items = []
+    for source, converted in taiwan_pairs(sample):
+        items.append(Item(source, "zho_Hans", FLORES_SET, TAIWAN_SLICE))
+        items.append(Item(converted, "zho_Hant", FLORES_SET, TAIWAN_SLICE))
+    return items
+
+
+def knowledge_base_items(path: Path) -> list[Item]:
+    """One item per indexed document, labelled with the language its source says it is written in.
+
+    Nobody has checked those labels, and arXiv documents are English metadata about work in any
+    language, so this set is reported next to the others, never merged into them.
+    """
+    if not path.exists():
+        return []
+    items = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        document = json.loads(line)
+        if document["language"] in LABELS:
+            items.append(Item(document["text"], document["language"], KB_SET, document["source"]))
+    return items
 
 
 def dakshina_items(test_sentences: dict[str, list[str]], test_words: dict[str, list[str]]) -> list[Item]:
@@ -179,14 +222,23 @@ def rss_mib() -> float | None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--detectors", default="", help="comma-separated detector names; default: every detector found"
+    )
+    args = parser.parse_args()
+    wanted = [name for name in args.detectors.split(",") if name]
+
     rng = random.Random(SEED)
     devtest = read_flores(fetch_flores(), "devtest")
     flores = flores_items(devtest, rng)
+    taiwan = taiwan_items(devtest, rng)
     items = (
         flores
         + short_items(flores, rng)
         + paragraph_items(flores)
         + code_mixed_items(flores, rng, CODE_MIXED_COUNT)
+        + taiwan
     )
     sets = {FLORES_SET: FLORES_SOURCE}
     dakshina_dir = CACHE_DIR / "dakshina"
@@ -198,6 +250,14 @@ def main() -> None:
     if (DATA_DIR / "test.jsonl").exists():
         items += internal_items(list(read_jsonl(DATA_DIR / "test.jsonl")), rng)
         sets[INTERNAL_SET] = {"path": "data/cache/lid/test.jsonl", "per_label": INTERNAL_PER_LABEL}
+    knowledge_base = knowledge_base_items(KNOWLEDGE_BASE)
+    if knowledge_base:
+        items += knowledge_base
+        sets[KB_SET] = {
+            "path": "data/knowledge-base.jsonl",
+            "documents": len(knowledge_base),
+            "labels": "the wiki or feed each document came from; not checked by a person",
+        }
     latency_texts = [i.text for i in rng.sample(flores, LATENCY_SAMPLES)]
 
     results = {
@@ -205,14 +265,24 @@ def main() -> None:
         "environment": environment(),
         "sets": sets,
         "items_per_set": {name: sum(i.set == name for i in items) for name in sets},
+        "synthetic_slices": {
+            TAIWAN_SLICE: {
+                "opencc_config": TAIWAN_CONFIG,
+                "built_from": "FLORES-200 devtest zho_Hans",
+                "pairs": len(taiwan) // 2,
+                "note": "conversions, not text written in Taiwan",
+            }
+        },
         "not_included": [
-            "Wikipedia language labels from the knowledge base (not built yet)",
             "FLORES+ devtest (gated on Hugging Face); FLORES-200 devtest from Meta's release is used",
+            "Curated fabrication methods: data/methods.csv holds its header row only, "
+            "so the knowledge-base set is arXiv metadata and Wikipedia lead sections",
         ],
         "lid176": LID176_SOURCE,
         "detectors": {},
     }
-    for spec in detector_specs(MODELS_DIR):
+    specs = [spec for spec in detector_specs(MODELS_DIR) if not wanted or spec.name in wanted]
+    for spec in specs:
         before = rss_mib()
         detector = spec.build()
         after = rss_mib()
