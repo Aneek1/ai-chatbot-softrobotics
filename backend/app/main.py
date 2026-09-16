@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager  # noqa: E402
 
 from fastapi import FastAPI  # noqa: E402
 
-from backend.app.api import chat, health  # noqa: E402
+from backend.app.api import chat, health, mode  # noqa: E402
 from backend.app.config import Settings  # noqa: E402
 from backend.app.services import Services, build_services  # noqa: E402
 
@@ -25,6 +25,7 @@ def create_app(services: Services | None = None) -> FastAPI:
     app.state.services = services
     app.include_router(chat.router)
     app.include_router(health.router)
+    app.include_router(mode.router)
     return app
 
 
