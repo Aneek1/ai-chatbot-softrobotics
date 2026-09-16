@@ -3,6 +3,7 @@ from typing import Any
 
 import httpx
 
+from backend.privacy.egress import egress_block_in
 from backend.providers.base import Message, ProviderError
 
 
@@ -41,4 +42,9 @@ class GeminiModel:
             detail = f"Gemini did not respond within {self._timeout} s"
             raise ProviderError("provider_timeout", detail) from exc
         except Exception as exc:  # the SDK raises several unrelated error types
+            block = egress_block_in(exc)
+            if block is not None:
+                raise ProviderError(
+                    "egress_blocked", f"The egress guard blocked Gemini at {block.host}"
+                ) from exc
             raise ProviderError("provider_error", f"Gemini request failed: {exc}") from exc

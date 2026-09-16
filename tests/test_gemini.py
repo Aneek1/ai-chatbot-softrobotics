@@ -3,6 +3,7 @@ from types import SimpleNamespace
 import httpx
 import pytest
 
+from backend.privacy.egress import EgressBlocked
 from backend.providers.base import Message, ProviderError
 from backend.providers.gemini import GeminiModel
 
@@ -70,3 +71,12 @@ def test_real_client_gets_a_timeout_in_milliseconds(monkeypatch):
     GeminiModel(api_key="test-key", model="test-model", timeout=2.5)
     assert created["api_key"] == "test-key"
     assert created["http_options"].timeout == 2500
+
+
+def test_blocked_connection_is_egress_blocked():
+    error_from_sdk = httpx.ConnectError("blocked")
+    error_from_sdk.__cause__ = EgressBlocked("generativelanguage.googleapis.com", 443)
+    with pytest.raises(ProviderError) as error:
+        list(gemini(FakeModels(error=error_from_sdk)).stream([Message("user", "hi")]))
+    assert error.value.code == "egress_blocked"
+    assert "generativelanguage.googleapis.com" in str(error.value)

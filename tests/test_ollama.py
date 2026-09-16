@@ -3,6 +3,7 @@ import json
 import httpx
 import pytest
 
+from backend.privacy.egress import EgressBlocked
 from backend.providers.base import Message, ProviderError
 from backend.providers.ollama import OllamaModel
 
@@ -129,3 +130,13 @@ def test_unreachable():
         raise httpx.ConnectError("refused", request=request)
 
     assert model_with(handler).reachable() is False
+
+
+def test_blocked_connection_is_egress_blocked():
+    def handler(request):
+        raise httpx.ConnectError("blocked", request=request) from EgressBlocked("ollama.test", 11434)
+
+    with pytest.raises(ProviderError) as error:
+        list(model_with(handler).stream([Message("user", "hi")]))
+    assert error.value.code == "egress_blocked"
+    assert "ollama.test" in str(error.value)

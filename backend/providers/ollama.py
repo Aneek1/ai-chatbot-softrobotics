@@ -4,6 +4,7 @@ from dataclasses import asdict
 
 import httpx
 
+from backend.privacy.egress import egress_block_in
 from backend.providers.base import Message, ProviderError
 
 
@@ -50,6 +51,11 @@ class OllamaModel:
                     if chunk.get("done"):
                         return
         except httpx.ConnectError as exc:
+            block = egress_block_in(exc)
+            if block is not None:
+                raise ProviderError(
+                    "egress_blocked", f"The egress guard blocked Ollama at {block.host}"
+                ) from exc
             raise ProviderError("ollama_unavailable", f"Ollama is not reachable at {self._base_url}") from exc
         except httpx.TimeoutException as exc:
             detail = f"Ollama did not respond within {self._timeout} s"
