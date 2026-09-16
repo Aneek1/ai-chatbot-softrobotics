@@ -1,8 +1,11 @@
-# The frontend is built on the builder's own architecture: it emits the same files either way, and
-# building it under emulation for arm64 would cost minutes for nothing.
-# BUILDPLATFORM is set by buildx; the default keeps a plain docker build working without it.
-ARG BUILDPLATFORM=linux/amd64
-FROM --platform=$BUILDPLATFORM node:24-slim@sha256:2fe369e969550cde8e867afc3fe370b260140cab4a23d467074295b42163d553 AS frontend
+# The frontend is built natively, on whatever architecture the build runs on: it emits the same
+# files either way, and CI builds each architecture on a runner of that architecture, so nothing
+# runs under emulation.
+# Do not pin --platform here. BUILDPLATFORM is only set by buildx, so under a plain `docker build`
+# the default won, pulling an amd64 node image onto the arm64 runner; the first RUN then failed with
+# "exec /bin/sh: exec format error". The digest below is a multi-arch OCI index, so with no platform
+# forced Docker resolves the right manifest on each architecture.
+FROM node:24-slim@sha256:2fe369e969550cde8e867afc3fe370b260140cab4a23d467074295b42163d553 AS frontend
 WORKDIR /frontend
 COPY frontend/package.json frontend/package-lock.json ./
 RUN npm ci
