@@ -14,7 +14,7 @@ import json
 import math
 import random
 import time
-from collections import defaultdict
+from collections import Counter, defaultdict
 from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -47,6 +47,8 @@ INTERNAL_PER_LABEL = 2_000
 CODE_MIXED_COUNT = 1_000
 TAIWAN_COUNT = 1_000
 LATENCY_SAMPLES = 300
+MISTAKES_PER_PAIR = 10
+MISTAKE_TEXT_CHARS = 120
 
 
 @dataclass(frozen=True)
@@ -182,6 +184,38 @@ def latency_ms(detector: Detector, texts: Sequence[str]) -> dict:
     }
 
 
+def mistake_examples(
+    items: Sequence[Item],
+    predictions: Sequence[tuple[str, float]],
+    per_pair: int = MISTAKES_PER_PAIR,
+) -> list[dict]:
+    """A bounded sample of real mistakes, for docs/error-analysis.md.
+
+    "other" is left out: it stands for every language the specialist was not trained to name, so its
+    mistakes say nothing about a supported language.
+    """
+    counts: Counter[tuple[str, str]] = Counter()
+    examples = []
+    for item, (prediction, probability) in zip(items, predictions, strict=True):
+        if prediction == item.gold or item.gold == OTHER:
+            continue
+        pair = (item.gold, prediction)
+        if counts[pair] >= per_pair:
+            continue
+        counts[pair] += 1
+        examples.append(
+            {
+                "set": item.set,
+                "slice": item.slice,
+                "gold": item.gold,
+                "predicted": prediction,
+                "probability": round(probability, 4),
+                "text": item.text[:MISTAKE_TEXT_CHARS],
+            }
+        )
+    return examples
+
+
 def evaluate(detector: Detector, items: Sequence[Item]) -> dict:
     started = time.perf_counter()
     predictions = detector.predict_many([i.text for i in items])
@@ -199,6 +233,7 @@ def evaluate(detector: Detector, items: Sequence[Item]) -> dict:
         "items": len(items),
         "seconds": round(seconds, 1),
         "slices": slices,
+        "mistakes": mistake_examples(items, predictions),
         "threshold_sweep": threshold_sweep(
             [items[i].gold for i in sentences], [predictions[i] for i in sentences]
         ),

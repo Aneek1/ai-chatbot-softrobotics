@@ -14,6 +14,7 @@ from eval.langid_eval import (
     internal_items,
     knowledge_base_items,
     latency_ms,
+    mistake_examples,
     paragraph_items,
     percentile,
     short_items,
@@ -174,3 +175,27 @@ def test_knowledge_base_items_use_the_document_language_and_source(tmp_path):
 
 def test_knowledge_base_items_of_a_missing_file_are_empty():
     assert knowledge_base_items(Path("does-not-exist.jsonl")) == []
+
+
+def test_mistake_examples_are_capped_per_gold_and_prediction():
+    items = [Item(f"text {i}", "zsm_Latn", "flores200-devtest", "sentence") for i in range(5)]
+    predictions = [("ind_Latn", 0.6)] * 5
+    examples = mistake_examples(items, predictions, per_pair=2)
+    assert len(examples) == 2
+    assert examples[0] == {
+        "set": "flores200-devtest",
+        "slice": "sentence",
+        "gold": "zsm_Latn",
+        "predicted": "ind_Latn",
+        "probability": 0.6,
+        "text": "text 0",
+    }
+
+
+def test_mistake_examples_skip_correct_answers_and_the_other_label():
+    items = [
+        Item("right", "eng_Latn", "flores200-devtest", "sentence"),
+        Item("wrong", "other", "flores200-devtest", "sentence"),
+    ]
+    predictions = [("eng_Latn", 0.9), ("eng_Latn", 0.5)]
+    assert mistake_examples(items, predictions) == []
