@@ -310,8 +310,12 @@ That judge was `qwen3:30b-a3b-instruct-2507-q4_K_M`, and it agreed with the pers
 - Two supported languages have no documents at all, Chinese (Traditional) and romanized Hindi, so
   questions in them are answered from documents in another language. The counts are in
   [DATASHEET.md](DATASHEET.md).
-- Retrieval quality, answer-language accuracy and whether a cited chunk really supports the sentence
-  citing it are not measured yet. The results below are language identification only.
+- Retrieval quality, answer-language accuracy and citation faithfulness are now measured, over 200
+  questions in ten languages: see Results. Two caveats travel with those numbers. Answering in the
+  question's language is weakest for romanized Hindi (0.450) and Hindi (0.700), so a reader asking in
+  those often gets an answer in another language. And "the cited chunk supports the sentence" (0.875)
+  was judged by a model that agreed with a hand-labelled sample only 0.750 of the time, so treat it
+  as an indicator rather than a measurement.
 - The frontend workspace is not built. The API is the interface.
 - Google's Custom Search JSON API is being wound down; `WEB_SEARCH=duckduckgo` uses the same
   interface if your key stops working, and `WEB_SEARCH=off` turns web search off.
