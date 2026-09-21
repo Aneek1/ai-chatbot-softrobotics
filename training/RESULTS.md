@@ -58,19 +58,19 @@ Source: `results/lid-flores200-devtest-2026-09-15.json`. Every language outside 
 
 ## Macro-F1 by slice
 
-Source: `results/langid-eval-2026-09-15.json`.
+Source: `results/langid-eval-2026-09-21.json`.
 
-| Detector | FLORES sentence | FLORES 1-3 words | FLORES paragraph | code-mixed | Dakshina sentence | Dakshina words | p50 ms | p95 ms | Model MB |
-|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| glotlid-full | 0.974 | 0.762 | 0.983 | 0.550 | 0.938 | 0.142 | 0.64 | 0.89 | 1687.1 |
-| glotlid-compressed | 0.975 | 0.761 | 0.980 | 0.556 | 0.935 | 0.142 | 0.77 | 1.13 | 224.6 |
-| lid.176 | 0.817 | 0.740 | 0.889 | 0.361 | 0.001 | 0.003 | 0.06 | 0.13 | 0.9 |
-| specialist-fasttext | 0.963 | 0.837 | 0.997 | 0.683 | 0.848 | 0.579 | 0.05 | 0.14 | 1.9 |
-| two-stage+specialist-fasttext | 0.977 | 0.773 | 0.996 | 0.564 | 0.839 | 0.170 | 0.86 | 1.25 | 226.5 |
-| specialist-e5-head | 0.859 | 0.838 | 0.901 | 0.367 | 0.814 | 0.659 | 101.20 | 169.51 | 471.1 |
-| two-stage+specialist-e5-head | 0.972 | 0.768 | 0.955 | 0.531 | 0.823 | 0.187 | 2.84 | 85.96 | 695.7 |
-| specialist-e5-finetune | 0.964 | 0.856 | 0.962 | 0.739 | 0.934 | 0.675 | 82.00 | 138.28 | 471.6 |
-| two-stage+specialist-e5-finetune | 0.978 | 0.778 | 0.995 | 0.568 | 0.910 | 0.198 | 2.37 | 75.31 | 696.2 |
+| Detector | FLORES sentence | FLORES 1-3 words | FLORES paragraph | Taiwan vocabulary | code-mixed | Dakshina sentence | Dakshina words | p50 ms | p95 ms | Model MB |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| glotlid-full | 0.974 | 0.756 | 0.983 | 0.973 | 0.582 | 0.938 | 0.142 | 0.35 | 0.51 | 1687.1 |
+| glotlid-compressed | 0.975 | 0.756 | 0.980 | 0.971 | 0.592 | 0.935 | 0.142 | 0.78 | 1.21 | 224.6 |
+| lid.176 | 0.817 | 0.750 | 0.889 | 0.962 | 0.359 | 0.001 | 0.003 | 0.06 | 0.15 | 0.9 |
+| specialist-fasttext | 0.963 | 0.843 | 0.997 | 0.991 | 0.719 | 0.848 | 0.579 | 0.08 | 0.18 | 1.9 |
+| two-stage+specialist-fasttext | 0.977 | 0.774 | 0.996 | 0.985 | 0.599 | 0.839 | 0.170 | 0.89 | 1.34 | 226.5 |
+| specialist-e5-head | 0.859 | 0.842 | 0.901 | 0.983 | 0.374 | 0.814 | 0.659 | 100.67 | 165.53 | 471.1 |
+| two-stage+specialist-e5-head | 0.972 | 0.766 | 0.955 | 0.985 | 0.564 | 0.823 | 0.187 | 2.90 | 78.70 | 695.7 |
+| specialist-e5-finetune | 0.964 | 0.859 | 0.962 | 1.000 | 0.692 | 0.934 | 0.675 | 77.37 | 130.44 | 471.6 |
+| two-stage+specialist-e5-finetune | 0.978 | 0.774 | 0.995 | 0.992 | 0.600 | 0.910 | 0.198 | 2.48 | 77.74 | 696.2 |
 
 ## Contamination check
 

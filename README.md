@@ -190,20 +190,20 @@ built in [training/data/DATACARD.md](training/data/DATACARD.md), what came out i
 ## Results
 
 <!-- results:start -->
-Macro-F1 by slice, from `results/langid-eval-2026-09-15.json`, measured on 2026-09-15.
-Items: flores200-devtest 41,749, dakshina-test 24,899, internal-test 20,555.
+Macro-F1 by slice, from `results/langid-eval-2026-09-21.json`, measured on 2026-09-21.
+Items: flores200-devtest 43,749, dakshina-test 24,899, internal-test 20,555, knowledge-base 86.
 
 | Detector | FLORES sentence | FLORES 1-3 words | code-mixed | Dakshina sentence | internal test | p50 ms | Model MB |
 |---|---:|---:|---:|---:|---:|---:|---:|
-| glotlid-full | 0.974 | 0.762 | 0.550 | 0.938 | 0.777 | 0.64 | 1687 |
-| glotlid-compressed | 0.975 | 0.761 | 0.556 | 0.935 | 0.781 | 0.77 | 225 |
-| lid.176 | 0.817 | 0.740 | 0.361 | 0.001 | 0.677 | 0.06 | 1 |
-| specialist-fasttext | 0.963 | 0.837 | 0.683 | 0.848 | 0.837 | 0.05 | 2 |
-| two-stage+specialist-fasttext | 0.977 | 0.773 | 0.564 | 0.839 | 0.765 | 0.86 | 227 |
-| specialist-e5-head | 0.859 | 0.838 | 0.367 | 0.814 | 0.818 | 101.20 | 471 |
-| two-stage+specialist-e5-head | 0.972 | 0.768 | 0.531 | 0.823 | 0.756 | 2.84 | 696 |
-| specialist-e5-finetune | 0.964 | 0.856 | 0.739 | 0.934 | 0.850 | 82.00 | 472 |
-| two-stage+specialist-e5-finetune | 0.978 | 0.778 | 0.568 | 0.910 | 0.763 | 2.37 | 696 |
+| glotlid-full | 0.974 | 0.756 | 0.582 | 0.938 | 0.777 | 0.35 | 1687 |
+| glotlid-compressed | 0.975 | 0.756 | 0.592 | 0.935 | 0.781 | 0.78 | 225 |
+| lid.176 | 0.817 | 0.750 | 0.359 | 0.001 | 0.678 | 0.06 | 1 |
+| specialist-fasttext | 0.963 | 0.843 | 0.719 | 0.848 | 0.838 | 0.08 | 2 |
+| two-stage+specialist-fasttext | 0.977 | 0.774 | 0.599 | 0.839 | 0.766 | 0.89 | 227 |
+| specialist-e5-head | 0.859 | 0.842 | 0.374 | 0.814 | 0.816 | 100.67 | 471 |
+| two-stage+specialist-e5-head | 0.972 | 0.766 | 0.564 | 0.823 | 0.758 | 2.90 | 696 |
+| specialist-e5-finetune | 0.964 | 0.859 | 0.692 | 0.934 | 0.850 | 77.37 | 472 |
+| two-stage+specialist-e5-finetune | 0.978 | 0.774 | 0.600 | 0.910 | 0.765 | 2.48 | 696 |
 
 Per-language precision and recall, the confusion groups, the threshold sweep and the comparison with the published GlotLID and OpenLID figures are in [training/RESULTS.md](training/RESULTS.md), generated from the same files.
 <!-- results:end -->
