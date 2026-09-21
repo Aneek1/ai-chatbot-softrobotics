@@ -22,6 +22,10 @@ from eval.questions import ENGLISH_PATH, QUESTIONS_PATH, Question, read_question
 REPO_ROOT = Path(__file__).resolve().parents[1]
 TARGETS = tuple(SUPPORTED)
 QUOTES = '"“”「」«»'
+SCRIPT_NOTE = {
+    # Asked for by name because the model otherwise answers a romanized target in its native script.
+    "hin_Latn": "Write it in Latin letters (romanized Hindi), never in Devanagari. ",
+}
 
 
 class TranslationError(RuntimeError):
@@ -32,6 +36,7 @@ def translation_prompt(question: Question, language: str) -> list[Message]:
     system = (
         "You translate short questions about soft-robotics fabrication. "
         f"Translate the question into {display_name(language)}. "
+        f"{SCRIPT_NOTE.get(language, '')}"
         "Keep it one question, keep the meaning, and answer with the translation only: "
         "no quotation marks, no explanation, no alternatives."
     )

@@ -60,3 +60,10 @@ def test_translate_all_covers_every_supported_language():
     assert len(results) == len(TARGETS) == 10
     assert len({q.id for q in results}) == 10
     assert clean_translation(" x \n") == "x"
+
+
+def test_the_romanized_target_asks_for_latin_letters():
+    system, _ = translation_prompt(ENGLISH, "hin_Latn")
+    assert "Latin letters" in system.content
+    assert "Devanagari" in system.content
+    assert "Latin letters" not in translation_prompt(ENGLISH, "hin_Deva")[0].content
