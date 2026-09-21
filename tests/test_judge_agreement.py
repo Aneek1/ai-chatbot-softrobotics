@@ -2,7 +2,14 @@ import random
 
 import pytest
 
-from eval.judge_agreement import SampleError, agreement, draft_sample, read_sample, write_sample
+from eval.judge_agreement import (
+    SampleError,
+    agreement,
+    check_no_labels_to_lose,
+    draft_sample,
+    read_sample,
+    write_sample,
+)
 
 
 def judged(n, verdict):
@@ -55,3 +62,14 @@ def test_write_then_read_round_trips(tmp_path):
     rows = [{"judge": "supported", "human": "", "sentence": "A [1].", "chunk_text": "A."}]
     write_sample(rows, path)
     assert read_sample(path) == rows
+
+
+def test_drafting_over_a_labelled_sample_is_refused_unless_forced(tmp_path):
+    path = tmp_path / "sample.jsonl"
+    assert check_no_labels_to_lose(path, force=False) is None  # a missing file is fine
+    write_sample([{"judge": "supported", "human": ""}], path)
+    assert check_no_labels_to_lose(path, force=False) is None  # an unlabelled draft is fine
+    write_sample([{"judge": "supported", "human": "supported"}], path)
+    with pytest.raises(SystemExit, match="already has labelled rows"):
+        check_no_labels_to_lose(path, force=False)
+    assert check_no_labels_to_lose(path, force=True) is None

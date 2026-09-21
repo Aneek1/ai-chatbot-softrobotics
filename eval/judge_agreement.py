@@ -4,7 +4,8 @@
     (fill in the "human" field of every row with supported, unsupported or unclear)
     PYTHONUTF8=1 uv run python -m eval.judge_agreement --score
 
---draft writes a stratified sample of judged pairs with an empty human field. --score compares the
+--draft writes a stratified sample of judged pairs with an empty human field, and refuses to run
+once the sample has been labelled by hand unless --force says to throw that work away. --score compares the
 two columns and writes the agreement into the results file, so the faithfulness numbers are always
 published next to the evidence for how much the judge can be trusted.
 """
@@ -69,6 +70,15 @@ def read_sample(path: Path = SAMPLE_PATH) -> list[dict]:
     ]
 
 
+def check_no_labels_to_lose(path: Path = SAMPLE_PATH, force: bool = False) -> None:
+    """Refuse to redraft over hand labels: a draft is cheap to redo, a day of labelling is not."""
+    if force or not path.exists():
+        return
+    labelled = sum(1 for row in read_sample(path) if row["human"])
+    if labelled:
+        raise SystemExit(f"{path} already has labelled rows ({labelled}); pass --force to overwrite them")
+
+
 def agreement(sample: Sequence[dict]) -> dict:
     for row in sample:
         if row["human"] not in ("", *VERDICTS):
@@ -97,6 +107,7 @@ def main() -> None:
     parser.add_argument("--draft", action="store_true", help="write an unlabelled sample")
     parser.add_argument("--score", action="store_true", help="score the labelled sample")
     parser.add_argument("--count", type=int, default=DEFAULT_COUNT)
+    parser.add_argument("--force", action="store_true", help="redraft over a labelled sample")
     parser.add_argument("--results", type=Path, default=None)
     args = parser.parse_args()
     path = args.results or latest("rag-eval-*.json", RESULTS_DIR)
@@ -105,6 +116,7 @@ def main() -> None:
     results = json.loads(path.read_text(encoding="utf-8"))
 
     if args.draft:
+        check_no_labels_to_lose(force=args.force)
         written = write_sample(draft_sample(results, args.count))
         print(f"Wrote {written} pairs to {SAMPLE_PATH.relative_to(REPO_ROOT)}; fill in every 'human' field")
         return
