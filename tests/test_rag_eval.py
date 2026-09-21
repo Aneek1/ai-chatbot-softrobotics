@@ -1,7 +1,9 @@
+import pytest
+
 from backend.pipeline.langid import TwoStageDetector
 from backend.pipeline.retrieve import Chunk, Hit
 from eval.questions import Question
-from eval.rag_eval import answer_question, evaluate
+from eval.rag_eval import ContaminatedIndex, answer_question, evaluate
 from tests.fakes import FakeModel, FakeScorer
 
 TOPICS = {"Silicone rubber": ["wikipedia:en:3342099"]}
@@ -109,3 +111,18 @@ def test_evaluate_judges_the_pairs_when_a_judge_is_given():
     assert results["faithfulness"]["supported_rate"] == 1.0
     assert results["faithfulness_by_language"]["eng_Latn"]["pairs"] == 1
     assert results["judge"] == "yes-judge"
+
+
+def test_a_test_only_chunk_stops_the_run():
+    """A test fixture indexed into the real index must never answer a real question."""
+    fixture = Hit(
+        Chunk(
+            "fixture-en:0", "fixture-en",
+            "Fixture text about silicone moulding. It exists only for tests.",
+            "eng_Latn", "fixture", "Silicone fixture", "https://example.invalid/en", "test-only",
+        ),
+        0.9,
+    )
+    retriever = FakeRetriever([hit("wikipedia:en:3342099"), fixture])
+    with pytest.raises(ContaminatedIndex, match="fixture-en"):
+        answer_question(question(), detector(), retriever, FakeModel(pieces=("a",)), TOPICS, 6)

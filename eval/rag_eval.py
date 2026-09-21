@@ -22,7 +22,7 @@ from pathlib import Path
 from backend.pipeline.citations import check_citations
 from backend.pipeline.langid import LanguageDetector
 from backend.pipeline.prompt import build_messages
-from backend.pipeline.retrieve import Retriever
+from backend.pipeline.retrieve import Hit, Retriever, is_test_only
 from backend.providers.base import AnswerModel
 from eval.faithfulness import ModelJudge, faithfulness, judge_all, pairs_for
 from eval.questions import QUESTIONS_PATH, Question, read_questions
@@ -45,7 +45,24 @@ NOTES = (
     "supports the sentence is the faithfulness section, judged by a model; "
     "eval/judge_agreement.py reports how often that judge agreed with a hand-labelled sample.",
     "Web search is off during this run, so nothing outside the index can answer a question.",
+    "The index is checked before and during the run: a retrieved chunk whose source is a test "
+    "fixture stops the run, so no number here was produced with test data in the corpus.",
 )
+
+
+class ContaminatedIndex(RuntimeError):
+    """The index holds documents that are test data, so an answer could be grounded in them."""
+
+
+def check_hits_are_corpus(hits: Sequence[Hit]) -> None:
+    """Stop the run rather than publish a number a test fixture helped produce."""
+    bad = [h.chunk for h in hits if is_test_only(h.chunk.source, h.chunk.licence)]
+    if bad:
+        named = ", ".join(f"{c.doc_id} (source {c.source}, licence {c.licence})" for c in bad)
+        raise ContaminatedIndex(
+            f"retrieval returned test-only documents: {named}. "
+            "Run: uv run python -m ingest.purge_test_docs"
+        )
 
 
 def answer_question(
@@ -58,6 +75,7 @@ def answer_question(
 ) -> tuple[dict, list, str, list]:
     started = time.perf_counter()
     hits = retriever.search(question.text, top_k)
+    check_hits_are_corpus(hits)
     doc_ids = [hit.chunk.doc_id for hit in hits]
     answer = "".join(model.stream(build_messages(question.text, question.language, hits)))
     check = check_citations(answer, source_count=len(hits))
@@ -166,6 +184,13 @@ def main() -> None:
         specialist=specialist,
     )
     index = ChunkIndex.open(settings.index_dir, embedder)
+    contaminated = sorted(index.non_corpus_doc_ids())
+    if contaminated:
+        index.close()
+        raise ContaminatedIndex(
+            f"{settings.index_dir} holds test-only documents: {', '.join(contaminated)}. "
+            "Run: uv run python -m ingest.purge_test_docs"
+        )
     model = OllamaModel(settings.ollama_url, settings.ollama_model, settings.ollama_timeout)
     judge = None if args.no_judge else ModelJudge(model, settings.ollama_model)
     try:
