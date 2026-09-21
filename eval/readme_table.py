@@ -168,7 +168,9 @@ def main() -> None:
     parser.add_argument("--detector", default=DEFAULT_DETECTOR)
     args = parser.parse_args()
     block = render(_load("langid-eval-*.json"), _load("rag-eval-*.json"), detector=args.detector)
-    README.write_text(replace_block(README.read_text(encoding="utf-8"), block), encoding="utf-8")
+    README.write_text(
+        replace_block(README.read_text(encoding="utf-8"), block), encoding="utf-8", newline="\n"
+    )
     print(f"Wrote the results block in {README.relative_to(REPO_ROOT)}")
 
 

@@ -110,3 +110,17 @@ def test_replace_block_keeps_the_text_around_the_markers():
     assert "before" in updated and "after" in updated and "old" not in updated and "new table" in updated
     with pytest.raises(ValueError, match="markers"):
         replace_block("# Title\n", "new table")
+
+
+def test_main_writes_the_readme_back_with_unix_line_endings(tmp_path, monkeypatch):
+    from eval import readme_table
+
+    readme = tmp_path / "README.md"
+    body = f"# Title\n\nbefore\n\n{START}\n\nold\n\n{END}\n\nafter\n"
+    readme.write_text(body, encoding="utf-8", newline="\n")
+    monkeypatch.setattr(readme_table, "REPO_ROOT", tmp_path)
+    monkeypatch.setattr(readme_table, "README", readme)
+    monkeypatch.setattr(readme_table, "_load", lambda pattern: None)
+    monkeypatch.setattr("sys.argv", ["readme_table"])
+    readme_table.main()
+    assert b"\r" not in readme.read_bytes()
