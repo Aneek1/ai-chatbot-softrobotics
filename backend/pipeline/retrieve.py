@@ -84,5 +84,16 @@ class ChunkIndex:
             if offset is None:
                 return dict(counts)
 
+    def doc_ids(self) -> set[str]:
+        ids: set[str] = set()
+        offset = None
+        while True:
+            points, offset = self._client.scroll(
+                self.COLLECTION, limit=256, offset=offset, with_payload=["doc_id"], with_vectors=False
+            )
+            ids.update(p.payload["doc_id"] for p in points)
+            if offset is None:
+                return ids
+
     def close(self) -> None:
         self._client.close()

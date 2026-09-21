@@ -44,3 +44,9 @@ def test_counts_by_language():
 
 def test_empty_index_returns_no_hits():
     assert make_index().search("silicone", top_k=6) == []
+
+
+def test_doc_ids_lists_every_indexed_document():
+    index = make_index()
+    index.add([chunk(1, "silicone"), chunk(2, "printing"), chunk(2, "printing again")])
+    assert index.doc_ids() == {"doc1", "doc2"}
