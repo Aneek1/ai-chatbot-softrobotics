@@ -22,9 +22,44 @@ the decisions behind it are in [docs/decisions/](docs/decisions/).
 - Has a private mode: local model only, DuckDuckGo only, nothing written to disk, with an in-app
   guard that refuses any other outbound connection.
 
-The HTTP API is the working interface. The React frontend is set up, themed and built by the
-container, but its workspace screens are not written yet, so what it serves today is a placeholder
-page.
+## Interface
+
+The interface is a React workspace in `frontend/`: the chat list on the left, the chat in the
+middle, and an inspector on the right with three tabs, navigated with a roving tabindex and the
+arrow keys, per the WAI-ARIA tabs pattern.
+
+- **Language** shows the top candidates the detector returned with their probabilities, each one's
+  raw label (`ind_Latn`, `zho_Hant`) alongside its name, and which stage decided. The answer
+  language can be overridden from the same tab.
+- **Sources** lists the documents the answer was built from, each with its language, where it came
+  from, its licence and a link to the original, and marks the ones the answer cited.
+- **Privacy** holds the private-mode switch, says whether a proxy is configured, and streams the
+  connection log from `GET /api/egress`.
+
+Both themes, light and dark, are remembered in `localStorage` and seeded from
+`prefers-color-scheme` on first load. The frontend has its own suite of 129 tests, covering these
+components and the state around them.
+
+What it does not do: chat deletion is a single click with no confirmation and no undo; the
+connection log tells you when it could not be loaded rather than rendering an empty list as if
+nothing had happened, but that also means the log you see can be incomplete; it has no accounts and
+no server-side session, so anyone who can open the page can use the backend; it never translates its
+own labels, which stay in English while answers follow the question's language; and it shows only
+what the backend reports, so an empty Sources tab means retrieval and web search both returned
+nothing, not that the answer was invented. The suite above runs against a mocked API; nothing here
+has yet been exercised against a running backend end to end.
+
+Run it in development with the backend on port 8000 and the dev server proxying to it:
+
+```bash
+PYTHONUTF8=1 uv run uvicorn backend.app.main:app --port 8000
+cd frontend && npm ci && npm run dev
+```
+
+The dev server prints a `http://localhost:5173` address. For a production build, `npm run build`
+writes `frontend/dist/`, which the API serves at `/` when it is present, and `npm run check:bundle`
+fails if anything in that build points at a host other than this origin: the app bundles its own
+scripts and styles, uses the system font stack, and loads nothing from a CDN.
 
 ## Running it
 
@@ -316,7 +351,8 @@ That judge was `qwen3:30b-a3b-instruct-2507-q4_K_M`, and it agreed with the pers
   those often gets an answer in another language. And "the cited chunk supports the sentence" (0.875)
   was judged by a model that agreed with a hand-labelled sample only 0.750 of the time, so treat it
   as an indicator rather than a measurement.
-- The frontend workspace is not built. The API is the interface.
+- The frontend has not been checked against a running backend; see [Interface](#interface). Its
+  test suite runs against a mocked API only.
 - Google's Custom Search JSON API is being wound down; `WEB_SEARCH=duckduckgo` uses the same
   interface if your key stops working, and `WEB_SEARCH=off` turns web search off.
 - The evaluation ran on one machine, recorded in each results file. Latency figures are from that
