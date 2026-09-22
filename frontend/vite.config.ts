@@ -22,6 +22,11 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     include: ["src/**/*.test.ts", "src/**/*.test.tsx", "scripts/**/*.test.ts"],
+    // restoreMocks only restores vi.spyOn spies. Vitest 3 also cleared plain vi.fn()
+    // call history as a side effect and Vitest 4 does not, so a test asserting a call
+    // count saw every earlier test's calls too. Clear the history explicitly rather
+    // than depending on what restoreMocks happens to do.
     restoreMocks: true,
+    clearMocks: true,
   },
 });
