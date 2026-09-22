@@ -33,8 +33,8 @@ export interface ChatState {
 
 export type ChatAction =
   | { type: "ask"; id: string; question: string }
-  | { type: "event"; event: ChatEvent }
-  | { type: "failed"; error: StreamError }
+  | { type: "event"; turnId: string; event: ChatEvent }
+  | { type: "failed"; turnId: string; error: StreamError }
   | { type: "load"; chatId: string; turns: Turn[] }
   | { type: "reset" };
 
@@ -56,37 +56,55 @@ export function newTurn(id: string, question: string): Turn {
   };
 }
 
-function withLast(state: ChatState, change: (turn: Turn) => Turn): ChatState {
-  if (state.turns.length === 0) {
+/**
+ * Applies `change` to the turn identified by `turnId`, if it still exists in
+ * `state`. A turn stops existing once a second `ask` supersedes it as the
+ * event target for a caller still holding a stale id, or once `load` swaps
+ * in a whole new set of turns (e.g. the user switched chats mid-stream). In
+ * either case the event is for a turn that is no longer part of this state,
+ * so it is dropped silently rather than corrupting whatever turn happens to
+ * be last, or throwing.
+ */
+function withTurn(state: ChatState, turnId: string, change: (turn: Turn) => Turn): ChatState {
+  const index = state.turns.findIndex((turn) => turn.id === turnId);
+  if (index === -1) {
     return state;
   }
   const turns = [...state.turns];
-  turns[turns.length - 1] = change(turns[turns.length - 1]);
+  turns[index] = change(turns[index]);
   return { ...state, turns };
 }
 
-function applyEvent(state: ChatState, event: ChatEvent): ChatState {
+function applyEvent(state: ChatState, turnId: string, event: ChatEvent): ChatState {
   switch (event.type) {
     case "language":
-      return withLast(state, (turn) => ({ ...turn, language: event.data }));
+      return withTurn(state, turnId, (turn) => ({ ...turn, language: event.data }));
     case "sources":
-      return withLast(state, (turn) => ({ ...turn, sources: event.data }));
+      return withTurn(state, turnId, (turn) => ({ ...turn, sources: event.data }));
     case "web":
-      return withLast(state, (turn) => ({ ...turn, web: event.data }));
+      return withTurn(state, turnId, (turn) => ({ ...turn, web: event.data }));
     case "token":
-      return withLast(state, (turn) => ({ ...turn, answer: turn.answer + event.data.text }));
+      // Applied as-is: two genuinely distinct token events can legitimately
+      // carry identical text, so the reducer cannot tell a real repeat from
+      // a redelivered one. Guaranteeing at-most-once delivery is the SSE
+      // transport's job (e.g. de-duplicating by event id), not this
+      // reducer's.
+      return withTurn(state, turnId, (turn) => ({ ...turn, answer: turn.answer + event.data.text }));
     case "citations":
-      return withLast(state, (turn) => ({
+      return withTurn(state, turnId, (turn) => ({
         ...turn,
         citations: event.data,
         answer: stripRemovedCitations(turn.answer, event.data.removed),
       }));
     case "notice":
-      return withLast(state, (turn) => ({ ...turn, notices: [...turn.notices, event.data] }));
+      return withTurn(state, turnId, (turn) => ({ ...turn, notices: [...turn.notices, event.data] }));
     case "error":
-      return withLast(state, (turn) => ({ ...turn, error: event.data, status: "failed" }));
+      return withTurn(state, turnId, (turn) => ({ ...turn, error: event.data, status: "failed" }));
     case "done": {
-      const next = withLast(state, (turn) => ({
+      if (!state.turns.some((turn) => turn.id === turnId)) {
+        return state;
+      }
+      const next = withTurn(state, turnId, (turn) => ({
         ...turn,
         answerLanguage: event.data.answer_language,
         status: turn.status === "failed" ? "failed" : "done",
@@ -101,9 +119,9 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case "ask":
       return { ...state, turns: [...state.turns, newTurn(action.id, action.question)] };
     case "event":
-      return applyEvent(state, action.event);
+      return applyEvent(state, action.turnId, action.event);
     case "failed":
-      return withLast(state, (turn) => ({ ...turn, error: action.error, status: "failed" }));
+      return withTurn(state, action.turnId, (turn) => ({ ...turn, error: action.error, status: "failed" }));
     case "load":
       return { chatId: action.chatId, turns: action.turns };
     case "reset":
