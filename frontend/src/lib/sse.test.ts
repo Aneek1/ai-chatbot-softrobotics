@@ -56,4 +56,12 @@ describe("SseParser", () => {
     }
     expect(seen).toEqual(["a:1", "b:2"]);
   });
+
+  it("still yields the final event when the stream ends without a trailing blank line", async () => {
+    const seen: string[] = [];
+    for await (const message of readSse(stream("event: a\ndata: 1\n\nevent: b\ndata: 2"))) {
+      seen.push(`${message.event}:${message.data}`);
+    }
+    expect(seen).toEqual(["a:1", "b:2"]);
+  });
 });

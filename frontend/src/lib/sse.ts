@@ -52,6 +52,22 @@ export class SseParser {
       }
     }
   }
+
+  /**
+   * Parses whatever is left in the buffer as a final, unterminated event and
+   * clears it. Call this once the underlying stream reports `done`: a
+   * connection can close right after a complete event's fields but before
+   * its trailing blank line (a truncating proxy, a dropped connection), and
+   * without this the event is lost silently.
+   */
+  flush(): SseMessage | null {
+    const block = this.buffer;
+    this.buffer = "";
+    if (block === "") {
+      return null;
+    }
+    return parseBlock(block);
+  }
 }
 
 export async function* readSse(stream: ReadableStream<Uint8Array>): AsyncGenerator<SseMessage> {
@@ -62,6 +78,10 @@ export async function* readSse(stream: ReadableStream<Uint8Array>): AsyncGenerat
     for (;;) {
       const { done, value } = await reader.read();
       if (done) {
+        const trailing = parser.flush();
+        if (trailing !== null) {
+          yield trailing;
+        }
         return;
       }
       for (const message of parser.feed(decoder.decode(value, { stream: true }))) {

@@ -27,6 +27,20 @@ describe("api client", () => {
     expect(new ApiError(404, "gone").message).toBe("gone");
   });
 
+  it("carries a parsed JSON error body on a failed response", async () => {
+    stubFetch([jsonResponse({ code: "mode_locked", message: "Mode is locked by the admin" }, 409)]);
+    await expect(setMode(true)).rejects.toMatchObject({
+      name: "ApiError",
+      status: 409,
+      body: { code: "mode_locked", message: "Mode is locked by the admin" },
+    });
+  });
+
+  it("does not throw a second error when a failed response body is not JSON", async () => {
+    stubFetch([new Response("Internal Server Error", { status: 500 })]);
+    await expect(setMode(true)).rejects.toMatchObject({ name: "ApiError", status: 500, body: "Internal Server Error" });
+  });
+
   it("escapes the chat id in the path", async () => {
     const fetchMock = stubFetch([jsonResponse({ id: "a b", title: "", created_at: "", updated_at: "", messages: [] })]);
     await getChat("a b");
@@ -60,10 +74,26 @@ describe("api client", () => {
     await expect(iterator.next()).rejects.toMatchObject({ status: 500 });
   });
 
+  it("drops a chat event whose payload does not look like a chat event, without throwing", async () => {
+    stubFetch([
+      sseResponse(
+        'event: token\ndata: "just a string, not an object"\n\n' +
+          'event: token\ndata: {"text": "ok"}\n\n' +
+          'event: done\ndata: {"answer_language": "ind_Latn", "chat_id": "c1"}\n\n',
+      ),
+    ]);
+    const seen: string[] = [];
+    for await (const event of streamChat({ message: "hi", model: "ollama" })) {
+      seen.push(event.type);
+    }
+    expect(seen).toEqual(["token", "done"]);
+  });
+
   it("yields only connection entries from the egress stream", async () => {
     stubFetch([
       sseResponse(
-        ': open\n\nid: 1\nevent: connection\ndata: {"host": "localhost", "verdict": "allowed"}\n\n',
+        ': open\n\nid: 1\nevent: connection\ndata: {"host": "localhost", "verdict": "allowed"}\n\n' +
+          'event: notice\ndata: {"message": "reconnecting"}\n\n',
       ),
     ]);
     const entries = [];
