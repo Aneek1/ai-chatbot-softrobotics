@@ -47,7 +47,11 @@ class Settings(BaseSettings):
     # Longer than an Ollama answer may take, so a switch normally waits for it instead of failing.
     mode_switch_timeout: float = 150.0
 
-    web_search: Literal["google", "duckduckgo", "off"] = "google"
+    # DuckDuckGo needs no credentials, so it is the default that actually works out of the
+    # box. Decision 0003 already specifies "DuckDuckGo otherwise" when no Google key is
+    # configured, and Google's Custom Search API is being wound down. Set WEB_SEARCH=google
+    # with a key to use it, or WEB_SEARCH=off for no web search at all.
+    web_search: Literal["google", "duckduckgo", "off"] = "duckduckgo"
     google_search_key: SecretStr | None = None
     google_search_engine_id: str | None = None
     search_timeout: float = 10.0
