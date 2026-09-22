@@ -87,7 +87,14 @@ def build_services(settings: Settings, privacy: Privacy | None = None) -> Servic
         specialist=specialist,
     )
     index = ChunkIndex.open(settings.index_dir, embedder)
-    ollama = OllamaModel(settings.ollama_url, settings.ollama_model, settings.ollama_timeout)
+    ollama = OllamaModel(
+        settings.ollama_url,
+        settings.ollama_model,
+        settings.ollama_timeout,
+        repeat_penalty=settings.ollama_repeat_penalty,
+        num_predict=settings.ollama_num_predict,
+        repeat_last_n=settings.ollama_repeat_last_n,
+    )
     models: dict[str, AnswerModel] = {"ollama": ollama}
     if settings.gemini_configured:
         models["gemini"] = GeminiModel(

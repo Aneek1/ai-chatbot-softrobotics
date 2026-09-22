@@ -11,11 +11,23 @@ from backend.providers.base import Message, ProviderError
 class OllamaModel:
     name = "ollama"
 
-    def __init__(self, base_url: str, model: str, timeout: float, client: httpx.Client | None = None):
+    def __init__(
+        self,
+        base_url: str,
+        model: str,
+        timeout: float,
+        client: httpx.Client | None = None,
+        repeat_penalty: float = 1.1,
+        num_predict: int = 4096,
+        repeat_last_n: int = 512,
+    ):
         self._base_url = base_url.rstrip("/")
         self._model = model
         self._timeout = timeout
         self._client = client or httpx.Client()
+        self._repeat_penalty = repeat_penalty
+        self._num_predict = num_predict
+        self._repeat_last_n = repeat_last_n
 
     def stream(self, messages: Sequence[Message]) -> Iterator[str]:
         # With thinking on, qwen3 can spend the whole token budget on hidden reasoning
@@ -25,6 +37,12 @@ class OllamaModel:
             "stream": True,
             "think": False,
             "messages": [asdict(m) for m in messages],
+            # temperature/top_p/top_k are left to the model's own Modelfile defaults.
+            "options": {
+                "repeat_penalty": self._repeat_penalty,
+                "num_predict": self._num_predict,
+                "repeat_last_n": self._repeat_last_n,
+            },
         }
         try:
             with self._client.stream(
