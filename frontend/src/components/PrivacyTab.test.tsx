@@ -15,6 +15,7 @@ function setup(overrides: Partial<Parameters<typeof PrivacyTab>[0]> = {}) {
   const props = {
     mode: mode(),
     entries,
+    entriesFailed: false,
     busy: false,
     onChange: vi.fn(),
     ...overrides,
@@ -54,5 +55,11 @@ describe("PrivacyTab", () => {
   it("says when nothing has been attempted yet", () => {
     setup({ entries: [] });
     expect(screen.getByText("No connection attempts logged yet.")).toBeInTheDocument();
+  });
+
+  it("says the log could not be loaded, distinctly from nothing having happened", () => {
+    setup({ entries: [], entriesFailed: true });
+    expect(screen.queryByText("No connection attempts logged yet.")).not.toBeInTheDocument();
+    expect(screen.getByText("The connection log could not be loaded, so this list may be incomplete.")).toBeInTheDocument();
   });
 });

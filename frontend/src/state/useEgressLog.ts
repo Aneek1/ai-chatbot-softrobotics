@@ -3,9 +3,16 @@ import { useEffect, useState } from "react";
 import { streamEgress } from "../lib/api";
 import type { EgressEntry } from "../lib/types";
 
+export interface EgressLog {
+  entries: EgressEntry[];
+  /** True when the stream ended in an error, not a clean close (e.g. unmount/abort). */
+  failed: boolean;
+}
+
 /** Subscribes to GET /api/egress while `enabled`, newest entry first. */
-export function useEgressLog(enabled: boolean, limit = 200): EgressEntry[] {
+export function useEgressLog(enabled: boolean, limit = 200): EgressLog {
   const [entries, setEntries] = useState<EgressEntry[]>([]);
+  const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!enabled) {
@@ -21,11 +28,14 @@ export function useEgressLog(enabled: boolean, limit = 200): EgressEntry[] {
           setEntries((current) => [entry, ...current].slice(0, limit));
         }
       } catch {
-        // The stream ends when the backend stops or the view goes away; the list keeps what it has.
+        // An abort (view went away) is an intentional, clean stop, not a failure to report.
+        if (!abort.signal.aborted) {
+          setFailed(true);
+        }
       }
     })();
     return () => abort.abort();
   }, [enabled, limit]);
 
-  return entries;
+  return { entries, failed };
 }

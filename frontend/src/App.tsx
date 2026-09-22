@@ -26,7 +26,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [modeBusy, setModeBusy] = useState(false);
-  const entries = useEgressLog(true);
+  const { entries, failed: egressLogFailed } = useEgressLog(true);
 
   const refreshChats = useCallback(async () => {
     try {
@@ -116,7 +116,15 @@ export default function App() {
     {
       id: "privacy",
       label: "Privacy",
-      content: <PrivacyTab mode={mode} entries={entries} busy={modeBusy} onChange={onPrivateChange} />,
+      content: (
+        <PrivacyTab
+          mode={mode}
+          entries={entries}
+          entriesFailed={egressLogFailed}
+          busy={modeBusy}
+          onChange={onPrivateChange}
+        />
+      ),
     },
   ];
 

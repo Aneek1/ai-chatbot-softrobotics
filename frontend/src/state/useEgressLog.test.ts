@@ -18,8 +18,9 @@ describe("useEgressLog", () => {
       yield entry("html.duckduckgo.com");
     });
     const { result } = renderHook(() => useEgressLog(true));
-    await waitFor(() => expect(result.current).toHaveLength(2));
-    expect(result.current[0].host).toBe("html.duckduckgo.com");
+    await waitFor(() => expect(result.current.entries).toHaveLength(2));
+    expect(result.current.entries[0].host).toBe("html.duckduckgo.com");
+    expect(result.current.failed).toBe(false);
   });
 
   it("ends the stream when the view goes away", async () => {
@@ -33,5 +34,24 @@ describe("useEgressLog", () => {
     await waitFor(() => expect(signal).toBeDefined());
     unmount();
     expect(signal?.aborted).toBe(true);
+  });
+
+  it("reports that the log could not be loaded when the stream errors", async () => {
+    streamEgress.mockImplementation(() => {
+      throw new Error("network down");
+    });
+    const { result } = renderHook(() => useEgressLog(true));
+    await waitFor(() => expect(result.current.failed).toBe(true));
+    expect(result.current.entries).toEqual([]);
+  });
+
+  it("does not report a failure when nothing has happened yet", async () => {
+    streamEgress.mockImplementation(async function* stream() {
+      yield* [];
+      await new Promise(() => undefined);
+    });
+    const { result } = renderHook(() => useEgressLog(true));
+    expect(result.current.failed).toBe(false);
+    expect(result.current.entries).toEqual([]);
   });
 });

@@ -4,11 +4,12 @@ import type { EgressEntry, Mode } from "../lib/types";
 interface Props {
   mode: Mode | null;
   entries: EgressEntry[];
+  entriesFailed: boolean;
   busy: boolean;
   onChange: (isPrivate: boolean) => void;
 }
 
-export function PrivacyTab({ mode, entries, busy, onChange }: Props) {
+export function PrivacyTab({ mode, entries, entriesFailed, busy, onChange }: Props) {
   if (mode === null) {
     return <p className="text-sm text-muted">Waiting for the backend.</p>;
   }
@@ -27,8 +28,13 @@ export function PrivacyTab({ mode, entries, busy, onChange }: Props) {
       )}
       <div>
         <h3 className="text-xs uppercase tracking-wide text-muted">Connection attempts</h3>
+        {entriesFailed && (
+          <p role="alert" className="mt-2 text-sm text-danger">
+            The connection log could not be loaded, so this list may be incomplete.
+          </p>
+        )}
         {entries.length === 0 ? (
-          <p className="mt-2 text-sm text-muted">No connection attempts logged yet.</p>
+          !entriesFailed && <p className="mt-2 text-sm text-muted">No connection attempts logged yet.</p>
         ) : (
           <ul className="mt-2 flex flex-col gap-1">
             {entries.map((entry) => (
