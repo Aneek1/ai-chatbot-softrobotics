@@ -1,6 +1,10 @@
 """Index a JSONL file of documents (one JSON object per line).
 
 Usage: PYTHONUTF8=1 uv run python -m ingest.load_jsonl path/to/documents.jsonl
+
+--index writes somewhere other than the configured index. Use it for anything that is not corpus
+data (the test fixtures, a trial run): documents indexed next to the knowledge base cannot be
+told apart from it by retrieval, and would answer and be cited in real questions.
 """
 
 import argparse
@@ -82,13 +86,19 @@ def main() -> None:
     from backend.app.config import Settings
     from backend.pipeline.embeddings import E5Embedder
 
+    settings = Settings()
     parser = argparse.ArgumentParser()
     parser.add_argument("path", type=Path)
+    parser.add_argument(
+        "--index",
+        type=Path,
+        default=settings.index_dir,
+        help="index directory (use a throwaway one for anything that is not corpus data)",
+    )
     args = parser.parse_args()
 
-    settings = Settings()
     e5_dir = settings.models_dir / settings.e5_dir
-    index = ChunkIndex.open(settings.index_dir, E5Embedder(e5_dir))
+    index = ChunkIndex.open(args.index, E5Embedder(e5_dir))
     try:
         added = load_documents(
             args.path.read_text(encoding="utf-8").splitlines(),
@@ -97,7 +107,7 @@ def main() -> None:
         )
     finally:
         index.close()
-    print(f"Indexed {added} chunks from {args.path}")
+    print(f"Indexed {added} chunks from {args.path} into {args.index}")
 
 
 if __name__ == "__main__":

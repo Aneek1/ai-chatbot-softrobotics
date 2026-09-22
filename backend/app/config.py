@@ -29,13 +29,29 @@ class Settings(BaseSettings):
     ollama_url: str = "http://localhost:11434"
     ollama_model: str = "qwen3:8b"
     ollama_timeout: float = 120.0
+    # qwen3:30b-a3b-instruct-2507-q4_K_M sets repeat_penalty 1 (no penalty) in its own Modelfile,
+    # which Ollama's global default of 1.1 does not override. Without this, a loop that starts
+    # never stops. 1.1 is Ollama's own default penalty strength.
+    ollama_repeat_penalty: float = 1.1
+    # Bounds one answer so an unbroken loop cannot run until the context fills. Devanagari, Chinese,
+    # Japanese, Korean and Tamil tokenize into several times more tokens than English for the same
+    # amount of text, so this is sized for a long RAG answer in those scripts, not just English.
+    ollama_num_predict: int = 4096
+    # Ollama's default repeat_last_n of 64 only looks back 64 tokens, which is narrow next to a loop
+    # that can span a whole sentence or more in a token-hungry script. 512 covers several sentences
+    # of lookback without scanning the full context window on every token.
+    ollama_repeat_last_n: int = 512
 
     private_mode: bool = False
     private_proxy: str | None = None
     # Longer than an Ollama answer may take, so a switch normally waits for it instead of failing.
     mode_switch_timeout: float = 150.0
 
-    web_search: Literal["google", "duckduckgo", "off"] = "google"
+    # DuckDuckGo needs no credentials, so it is the default that actually works out of the
+    # box. Decision 0003 already specifies "DuckDuckGo otherwise" when no Google key is
+    # configured, and Google's Custom Search API is being wound down. Set WEB_SEARCH=google
+    # with a key to use it, or WEB_SEARCH=off for no web search at all.
+    web_search: Literal["google", "duckduckgo", "off"] = "duckduckgo"
     google_search_key: SecretStr | None = None
     google_search_engine_id: str | None = None
     search_timeout: float = 10.0

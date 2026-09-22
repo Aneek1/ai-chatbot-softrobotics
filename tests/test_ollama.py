@@ -38,6 +38,55 @@ def test_streams_content_and_disables_thinking():
     assert seen["body"]["messages"] == [{"role": "user", "content": "hi"}]
 
 
+def test_sends_options_that_bound_repetition_and_length():
+    seen = {}
+
+    def handler(request):
+        seen["body"] = json.loads(request.content)
+        return httpx.Response(
+            200, content=ndjson({"message": {"role": "assistant", "content": "x"}, "done": True})
+        )
+
+    list(model_with(handler).stream([Message("user", "hi")]))
+    options = seen["body"]["options"]
+    # repeat_penalty must override the model's own Modelfile value of 1 (no penalty at all);
+    # anything at or below 1.0 reproduces the reported infinite-loop bug.
+    assert options["repeat_penalty"] > 1.0
+    # num_predict must actually bound generation, and be large enough to fit a real answer,
+    # not just be present and truthy.
+    assert 256 < options["num_predict"] <= 8192
+    # repeat_last_n must be wider than Ollama's narrow default of 64 to catch a loop spanning
+    # more than a few tokens.
+    assert options["repeat_last_n"] > 64
+
+
+def test_options_come_from_constructor_values():
+    seen = {}
+
+    def handler(request):
+        seen["body"] = json.loads(request.content)
+        return httpx.Response(
+            200, content=ndjson({"message": {"role": "assistant", "content": "x"}, "done": True})
+        )
+
+    client = httpx.Client(transport=httpx.MockTransport(handler))
+    model = OllamaModel(
+        "http://ollama.test",
+        "qwen3:8b",
+        timeout=5.0,
+        client=client,
+        repeat_penalty=1.3,
+        num_predict=777,
+        repeat_last_n=333,
+    )
+    list(model.stream([Message("user", "hi")]))
+    assert seen["body"]["options"] == {
+        "repeat_penalty": 1.3,
+        "num_predict": 777,
+        "repeat_last_n": 333,
+    }
+
+
 def test_connection_refused_is_ollama_unavailable():
     def handler(request):
         raise httpx.ConnectError("refused", request=request)

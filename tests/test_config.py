@@ -79,7 +79,7 @@ def test_privacy_and_search_defaults(monkeypatch):
     assert settings.private_mode is False
     assert settings.private_proxy is None
     assert settings.mode_switch_timeout == 150.0
-    assert settings.web_search == "google"
+    assert settings.web_search == "duckduckgo"
     assert settings.google_search_configured is False
     assert settings.search_timeout == 10.0
     assert settings.search_max_results == 5
