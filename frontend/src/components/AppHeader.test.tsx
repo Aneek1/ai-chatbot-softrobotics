@@ -8,6 +8,7 @@ import { health, mode } from "../test/helpers";
 function setup(overrides: Partial<Parameters<typeof AppHeader>[0]> = {}) {
   const props = {
     health: health(),
+    healthError: false,
     mode: mode(),
     model: "ollama" as const,
     busy: false,
@@ -26,6 +27,11 @@ describe("AppHeader", () => {
     setup();
     expect(screen.getByRole("heading", { name: "Soft-robotics assistant" })).toBeInTheDocument();
     expect(screen.getByText("Detector: glotlid-q.ftz")).toBeInTheDocument();
+  });
+
+  it("shows the detector as unreachable, not unknown, when health failed to load", () => {
+    setup({ health: null, healthError: true });
+    expect(screen.getByText("Detector: unreachable")).toBeInTheDocument();
   });
 
   it("offers Gemini when it is configured", () => {

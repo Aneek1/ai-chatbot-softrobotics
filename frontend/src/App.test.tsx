@@ -108,4 +108,46 @@ describe("App", () => {
     await userEvent.click(screen.getByRole("button", { name: "Details" }));
     expect(screen.getByTestId("inspector-region")).toHaveAttribute("data-open", "true");
   });
+
+  it("shows the backend as unreachable when health fails to load, distinct from not checked yet", async () => {
+    api.getHealth.mockRejectedValue(new Error("network down"));
+    render(<App />);
+    expect(await screen.findByText("Detector: unreachable")).toBeInTheDocument();
+    expect(screen.queryByText("Detector: unknown")).not.toBeInTheDocument();
+  });
+
+  it("keeps the composer from sending a second question while one is streaming", async () => {
+    api.streamChat.mockImplementation(async function* stream() {
+      yield { type: "language", data: language() };
+      await new Promise<never>(() => {
+        // Never resolves: the stream stays open for the life of the test.
+      });
+    });
+    render(<App />);
+    await ask("Apa itu silikon?");
+    expect(await screen.findByRole("button", { name: "Stop" })).toBeInTheDocument();
+    await userEvent.type(screen.getByLabelText("Your question"), "Second question{Enter}");
+    expect(api.streamChat).toHaveBeenCalledTimes(1);
+  });
+
+  it("resets the transcript when the chat currently open is deleted", async () => {
+    api.getChat.mockResolvedValue({
+      id: "c1",
+      title: "Apa itu silikon?",
+      created_at: "2026-09-16T08:00:00.000Z",
+      updated_at: "2026-09-16T08:10:00.000Z",
+      messages: [
+        { role: "user", content: "Apa itu silikon?", created_at: "2026-09-16T08:00:00.000Z" },
+        { role: "assistant", content: "Silikon adalah polimer.", created_at: "2026-09-16T08:00:05.000Z" },
+      ],
+    });
+    api.deleteChat.mockResolvedValue(undefined);
+    render(<App />);
+    await userEvent.click(await screen.findByRole("button", { name: "Open chat: Apa itu silikon?" }));
+    expect(await screen.findByText("Silikon adalah polimer.")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Delete chat: Apa itu silikon?" }));
+    await waitFor(() => expect(api.deleteChat).toHaveBeenCalledWith("c1"));
+    expect(screen.queryByText("Silikon adalah polimer.")).not.toBeInTheDocument();
+    expect(await screen.findByText("Nothing asked yet")).toBeInTheDocument();
+  });
 });

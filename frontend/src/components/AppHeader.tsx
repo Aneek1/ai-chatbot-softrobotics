@@ -5,6 +5,7 @@ import type { Health, Mode, ModelName } from "../lib/types";
 
 interface Props {
   health: Health | null;
+  healthError: boolean;
   mode: Mode | null;
   model: ModelName;
   busy: boolean;
@@ -16,6 +17,7 @@ interface Props {
 
 export function AppHeader({
   health,
+  healthError,
   mode,
   model,
   busy,
@@ -62,7 +64,7 @@ export function AppHeader({
           isPrivate ? "font-mono text-xs text-private-muted" : "font-mono text-xs text-muted"
         }
       >
-        Detector: {health?.detector ?? "unknown"}
+        Detector: {health?.detector ?? (healthError ? "unreachable" : "unknown")}
       </span>
       <div className="ml-auto flex flex-wrap items-center gap-3">
         <label

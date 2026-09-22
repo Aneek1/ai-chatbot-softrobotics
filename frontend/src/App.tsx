@@ -18,6 +18,7 @@ export default function App() {
   const { theme, toggle } = useTheme();
   const chat = useChat();
   const [health, setHealth] = useState<Health | null>(null);
+  const [healthError, setHealthError] = useState(false);
   const [mode, setModeState] = useState<Mode | null>(null);
   const [chats, setChats] = useState<ChatSummary[]>([]);
   const [model, setModel] = useState<ModelName>("ollama");
@@ -39,9 +40,11 @@ export default function App() {
     void (async () => {
       try {
         setHealth(await getHealth());
+        setHealthError(false);
         setModeState(await getMode());
       } catch {
         setHealth(null);
+        setHealthError(true);
       }
       await refreshChats();
     })();
@@ -121,6 +124,7 @@ export default function App() {
     <div className="flex h-full flex-col bg-paper">
       <AppHeader
         health={health}
+        healthError={healthError}
         mode={mode}
         model={model}
         busy={modeBusy}
@@ -168,7 +172,7 @@ export default function App() {
             onSend={(question) => void onSend(question)}
             onStop={chat.stop}
             streaming={chat.streaming}
-            disabled={health === null}
+            disabled={health === null || chat.streaming}
           />
         </main>
         <aside
