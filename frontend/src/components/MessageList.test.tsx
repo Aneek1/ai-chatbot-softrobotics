@@ -74,6 +74,19 @@ describe("MessageList", () => {
     expect(onSelect).toHaveBeenCalledWith("turn-1");
   });
 
+  it("applies word-breaking to the question and answer, so long unbroken runs wrap instead of overflowing", () => {
+    render(
+      <MessageList
+        turns={[turn({ answer: "Silikon adalah polimer." })]}
+        selectedId={null}
+        onSelect={vi.fn()}
+        onRetry={vi.fn()}
+      />,
+    );
+    expect(screen.getByText("Apa itu silikon?")).toHaveClass("break-words");
+    expect(screen.getByText("Silikon adalah polimer.")).toHaveClass("break-words");
+  });
+
   it("names the language the answer was written in", () => {
     render(
       <MessageList

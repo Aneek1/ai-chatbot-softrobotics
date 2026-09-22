@@ -38,9 +38,9 @@ export function MessageList({ turns, selectedId, onSelect, onRetry }: Props) {
                 : "border-l-2 border-transparent pl-4"
             }
           >
-            <p className="whitespace-pre-wrap text-sm font-medium text-ink">{turn.question}</p>
+            <p className="whitespace-pre-wrap break-words text-sm font-medium text-ink">{turn.question}</p>
             {turn.answer !== "" && (
-              <p aria-live="polite" className="mt-3 whitespace-pre-wrap text-ink">
+              <p aria-live="polite" className="mt-3 whitespace-pre-wrap break-words text-ink">
                 {turn.answer}
               </p>
             )}
