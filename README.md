@@ -6,6 +6,18 @@ answers with a local or a hosted model, and cites the passages it used. Language
 the part of the project with the most work in it: a compressed GlotLID model covers two thousand
 languages, and a specialist trained in this repository decides the cases GlotLID confuses.
 
+**Measured, not asserted.** GlotLID is product-quantized from **1.69 GB to 225 MB** at no accuracy
+cost — **0.957 macro-F1 on FLORES-200** over 195 languages and 206,448 sentences, against the
+published model's 0.917. A specialist trained in this repository then decides the pairs GlotLID
+confuses: Malay against Indonesian, Simplified against Traditional Chinese, and romanized Hindi
+against Urdu and English. Its **0.8 MB** variant reaches 0.881 group macro-F1 where the 470 MB one
+reaches 0.913. How that was built, and where it is weakest, is in
+[docs/language-identification.md](docs/language-identification.md).
+
+Retrieval quality, answer-language accuracy and citation faithfulness are measured over 200
+questions in ten languages, and the limits are stated with numbers — including the two supported
+languages that have no documents at all.
+
 The design document is [docs/design/2026-09-15-multilingual-rag.md](docs/design/2026-09-15-multilingual-rag.md);
 the decisions behind it are in [docs/decisions/](docs/decisions/).
 
