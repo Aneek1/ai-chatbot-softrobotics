@@ -1,6 +1,9 @@
 # Models and their licences
 
-No model file is committed to this repository. `scripts/download_models.py` downloads them into a
+With one exception, no model file is committed to this repository. The exception is
+`models/lid-specialist-e5-head.onnx` and its sidecar: 799 KB, trained here rather than
+downloaded, and not fetchable from anywhere, so leaving it out meant every other machine
+needed a manual copy. It is the model the Core ML conversion and the iOS app are built on. `scripts/download_models.py` downloads them into a
 flat `models/` folder and writes `models/MANIFEST.json` with the repository, the revision and a
 SHA-256 for every file, so what is on disk can be checked against what was downloaded.
 

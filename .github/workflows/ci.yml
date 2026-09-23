@@ -65,3 +65,30 @@ jobs:
       # and no image leaves the runner.
       - run: docker build --tag softrobotics-assistant:ci .
       - run: docker run --rm softrobotics-assistant:ci python -c "import backend.app.main"
+
+  coreml:
+    name: Core ML conversion (Apple silicon)
+    # macos-latest is Apple silicon, so the conversion and its check run on the architecture the
+    # model is meant for rather than under emulation. Free for public repositories.
+    runs-on: macos-latest
+    env:
+      PYTHONUTF8: "1"
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.6"
+          python-version: "3.12"
+          enable-cache: true
+      - run: uv sync --frozen
+      - run: uv pip install coremltools
+      # Converts the committed 799 KB head and checks it against results/lid-head-reference.json,
+      # which was generated from the ONNX model on the machine that trained it. The script exits
+      # non-zero if any predicted label changed, because a model that answers differently no
+      # longer has the accuracy that was measured for it.
+      - run: uv run python scripts/coreml_export.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lid-specialist-e5-head-coreml
+          path: models/lid-specialist-e5-head.mlpackage
+          if-no-files-found: error

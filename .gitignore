@@ -14,6 +14,11 @@ frontend/dist/
 # Local data, models, secrets
 .env
 models/
+# ...except the specialist trained in this repository. It is 799 KB, it is our own
+# artifact rather than a third-party download, and nothing can fetch it, so keeping it
+# out made every other machine depend on a manual file copy.
+!models/lid-specialist-e5-head.onnx
+!models/lid-specialist-e5-head.json
 data/index/
 data/history.db
 data/cache/

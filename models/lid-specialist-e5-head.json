@@ -1,0 +1,22 @@
+{
+  "kind": "e5_head",
+  "labels": [
+    "eng_Latn",
+    "ind_Latn",
+    "zsm_Latn",
+    "zho_Hans",
+    "zho_Hant",
+    "jpn_Jpan",
+    "kor_Hang",
+    "tam_Taml",
+    "hin_Deva",
+    "hin_Latn",
+    "urd_Latn",
+    "other"
+  ],
+  "run_id": "e5-head-04-20260915-113244",
+  "bytes": 818597,
+  "prefix": "query: ",
+  "embedding_dim": 384,
+  "onnx_max_abs_diff": 0.0001220703125
+}
