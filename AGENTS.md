@@ -6,7 +6,8 @@ frontend, and a two-stage language identifier whose specialist model was trained
 Keep this file short — it is loaded into context every session.
 
 If you were pointed here to do the Core ML work, the task is in
-[docs/coreml-lid-task.md](docs/coreml-lid-task.md).
+[docs/coreml-lid-task.md](docs/coreml-lid-task.md). The iOS assistant it feeds into is
+designed in [docs/ios-assistant-design.md](docs/ios-assistant-design.md).
 
 ## Commands
 
