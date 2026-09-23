@@ -80,13 +80,15 @@ jobs:
           version: "0.12.6"
           python-version: "3.12"
           enable-cache: true
-      - run: uv sync --frozen
+      # torch comes from the train group: coremltools removed ONNX conversion in 6.x, so the
+      # head is rebuilt as the PyTorch module it was trained as and converted from there.
+      - run: uv sync --frozen --group train
       - run: uv pip install coremltools
       # Converts the committed 799 KB head and checks it against results/lid-head-reference.json,
       # which was generated from the ONNX model on the machine that trained it. The script exits
       # non-zero if any predicted label changed, because a model that answers differently no
       # longer has the accuracy that was measured for it.
-      - run: uv run python scripts/coreml_export.py
+      - run: uv run --group train python scripts/coreml_export.py
       - uses: actions/upload-artifact@v4
         with:
           name: lid-specialist-e5-head-coreml

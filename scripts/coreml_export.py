@@ -3,10 +3,18 @@
 **Runs on macOS only.** `coremltools` can convert elsewhere but cannot run a prediction off a Mac,
 and a conversion nobody has run is not a conversion anybody should trust.
 
-The comparison is against `results/lid-head-reference.json`, generated on the training machine from
-the ONNX model whose accuracy is recorded in training/RESULTS.md. That file holds the exact input
-vectors and the logits they produced, so this script feeds identical input rather than embedding
-text again — an embedder that normalised differently would otherwise look like a conversion error.
+`coremltools` no longer converts ONNX — the ONNX route was deprecated in 5.x and removed in 6, and
+the accepted sources are now TensorFlow, PyTorch and milinternal. The head was trained in PyTorch
+and exported to ONNX by `training/export.py`, so this rebuilds the PyTorch module and converts that.
+No checkpoint survives in `results/lid-runs/`, so the weights are read back out of the ONNX file,
+whose initializers are named after the state-dict keys they came from (`net.0.weight` and so on).
+
+Reconstruction is the risky step, and it is exactly what the reference catches. The comparison is
+against `results/lid-head-reference.json`, generated on the training machine from the ONNX model
+whose accuracy is recorded in training/RESULTS.md. It holds the exact input vectors and the logits
+they produced, so this feeds identical input rather than embedding text again — an embedder that
+normalised differently would otherwise look like a conversion error, and a mis-wired weight would
+look like nothing at all.
 
 Two things are checked, and they are not the same thing:
 
@@ -15,7 +23,7 @@ Two things are checked, and they are not the same thing:
                 conversion that keeps the numbers close while flipping a label has not preserved
                 the behaviour that was measured.
 
-Run:  python -m uv run python scripts/coreml_export.py
+Run:  python -m uv run --group train python scripts/coreml_export.py
 """
 
 from __future__ import annotations
@@ -35,9 +43,36 @@ ONNX_MODEL = REPO_ROOT / "models" / "lid-specialist-e5-head.onnx"
 SIDECAR = REPO_ROOT / "models" / "lid-specialist-e5-head.json"
 OUT_MODEL = REPO_ROOT / "models" / "lid-specialist-e5-head.mlpackage"
 
-# What the ONNX export already accepted when this model was produced, recorded in the sidecar as
-# onnx_max_abs_diff. Holding Core ML to the same bar rather than inventing a looser one.
+# The architecture the selected run was trained with, from
+# results/lid-runs/e5-head-04-20260915-113244/config.json. Dropout is inert once the module is in
+# eval mode; it is passed only so the layer indices line up with the state-dict keys.
+HIDDEN = 512
+DROPOUT = 0.1
+
+# What the ONNX export accepted when this model was produced, recorded in the sidecar as
+# onnx_max_abs_diff. Core ML is held to the same bar rather than a looser one invented for it.
 TOLERANCE = 1.5e-4
+
+
+def rebuild_from_onnx(dim: int, n_labels: int):
+    """Load the trained weights out of the ONNX file into the module they were trained in."""
+    import onnx
+    import torch
+    from onnx import numpy_helper
+
+    from training.embed_head import MLPHead
+
+    graph = onnx.load(str(ONNX_MODEL)).graph
+    state = {
+        init.name: torch.from_numpy(numpy_helper.to_array(init).copy())
+        for init in graph.initializer
+    }
+    model = MLPHead(dim=dim, hidden=HIDDEN, n_labels=n_labels, dropout=DROPOUT)
+    # strict=True: a renamed or missing key raises here rather than silently leaving a layer at
+    # its random initialisation, which would convert cleanly and answer nonsense.
+    model.load_state_dict(state, strict=True)
+    model.eval()
+    return model
 
 
 def main() -> int:
@@ -50,6 +85,7 @@ def main() -> int:
         return 2
 
     import coremltools as ct
+    import torch
 
     reference = json.loads(REFERENCE.read_text(encoding="utf-8"))
     labels: list[str] = reference["labels"]
@@ -59,13 +95,17 @@ def main() -> int:
     print(f"reference: {len(cases)} cases, {len(labels)} labels, {dim}-dim input")
     print(f"generated on: {reference['generated_on']['platform']}")
 
-    # Convert. The head takes one named input, "embedding", shaped (batch, 384), and returns
-    # "logits" shaped (batch, 12). A fixed batch of 1 is what the application actually asks for
-    # and lets Core ML specialise; change this only if you intend to batch.
+    torch_model = rebuild_from_onnx(dim, len(labels))
+    print(f"rebuilt MLPHead(dim={dim}, hidden={HIDDEN}, n_labels={len(labels)}) from ONNX weights")
+
     print("\nconverting...")
+    example = torch.zeros(1, dim, dtype=torch.float32)
+    traced = torch.jit.trace(torch_model, example)
     model = ct.convert(
-        str(ONNX_MODEL),
+        traced,
+        source="pytorch",
         inputs=[ct.TensorType(name="embedding", shape=(1, dim), dtype=np.float32)],
+        outputs=[ct.TensorType(name="logits", dtype=np.float32)],
         minimum_deployment_target=ct.target.iOS17,
         compute_precision=ct.precision.FLOAT32,
     )
@@ -73,14 +113,13 @@ def main() -> int:
     size_kb = sum(f.stat().st_size for f in OUT_MODEL.rglob("*") if f.is_file()) / 1024
     print(f"wrote {OUT_MODEL.relative_to(REPO_ROOT)} ({size_kb:.0f} KB)")
 
-    # Compare against the reference, feeding the exact vectors it recorded.
     print("\nchecking against the ONNX reference...")
     worst = 0.0
     flipped: list[tuple[str, str, str]] = []
     for case in cases:
         vector = np.asarray([case["embedding"]], dtype=np.float32)
-        got = model.predict({"embedding": vector})["logits"]
-        got = np.asarray(got, dtype=np.float32).reshape(-1)
+        out = model.predict({"embedding": vector})
+        got = np.asarray(next(iter(out.values())), dtype=np.float32).reshape(-1)
         expected = np.asarray(case["logits"], dtype=np.float32)
 
         worst = max(worst, float(np.max(np.abs(got - expected))))
